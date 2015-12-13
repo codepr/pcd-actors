@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,26 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
- * @version 1.0
- * @since 1.0
- */
-
-/**
- * Please, insert description here.
- *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
- * Test cases about {@link ActorRef} type.
+ * A message that can be sent among actors
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class ActorRefTest {
+public abstract class AbsMessage<T> implements Message {
+    private T message;
 
-    @Test
-    public void simpleTest() {
-        // FIXME This is a simple (and definitely useless) example test
-        //       that has to be substituted with something more useful
-        Assert.assertTrue(true);
+    public AbsMessage(T message) {
+        this.message = message;
+    }
+
+    public T getMessage() {
+        return this.message;
     }
 }

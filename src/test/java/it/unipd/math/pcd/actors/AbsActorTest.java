@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,36 +23,40 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
- * @version 1.0
- * @since 1.0
- */
-
-/**
- * Please, insert description here.
- *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
 
+import java.text.MessageFormat;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test cases about {@link ActorRef} type.
+ * Test cases about {@link AbsActor} type.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class ActorRefTest {
+public class AbsActorTest extends AbsActor<AbsMessage<String>> {
+    /*
+     * count field
+     */
+    private int count = 0;
 
-    @Test
-    public void simpleTest() {
-        // FIXME This is a simple (and definitely useless) example test
-        //       that has to be substituted with something more useful
-        Assert.assertTrue(true);
+    public void receive(AbsMessage<String> message) {
+        switch (message.getMessage()) {
+        case "hello":
+            count = count + 1;
+            break;
+        case "bye":
+            count = count - 1;
+            break;
+        default:
+            System.out.println("Error");
+        }
     }
 }
