@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,50 +38,30 @@
 package it.unipd.math.pcd.actors;
 
 /**
- * A reference of an actor that allow to locate it in the actor system.
- * Using this reference it is possible to send a message among actors.
+ * A mail box system in the <code>pcd-actor</code> system that stores incoming
+ * messages of the defined type.
  *
  * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class ActorRefImpl<T extends Message> implements ActorRef<T> {
+public interface MailBox<T extends Message> {
 
     /**
-     * {@link ActorSystem} reference for sending messages
+     * Equeue incoming messages inside the structure of choice.
+     * @param message The type of messages the mail box can store.
      */
-    private ActorSystem actorSystem;
+    void enQueue(T message);
 
     /**
-     * {@link ActorMode} type to set mode
+     * Remove the head of the queue
+     * @return The element previously stored in the head of the queue
      */
-    private ActorSystem.ActorMode mode;
-
-    public ActorRefImpl(ActorSystem actorSystem, ActorSystem.ActorMode mode) {
-        this.actorSystem = actorSystem;
-        this.mode = mode;
-    }
+    T remove();
 
     /**
-     * Sends a {@code message} to another actor
-     *
-     * @param message The message to send
-     * @param to The actor to which sending the message
+     * Check if the queue is empty
+     * @return True if the queue is empty, false otherwise
      */
-    @Override
-    public void send(T message, ActorRef to) {
-        AbsActor<T> actor = (AbsActor<T>) actorSystem.getActorInstance(to);
-        actor.receive(message);
-    }
-
-    /**
-     * Compare two actorRef
-     *
-     * @param to The ActorRef reference to compare with
-     * @return An integer that states if to is < = or > of this
-     */
-    @Override
-    public int compareTo(ActorRef to) {
-        return this.compareTo(to);
-    }
+	boolean isEmpty();
 }

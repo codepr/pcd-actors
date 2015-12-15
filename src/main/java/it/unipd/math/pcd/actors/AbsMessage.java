@@ -28,6 +28,7 @@
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
+
 /**
  * A message that can be sent among actors
  *
@@ -36,13 +37,23 @@ package it.unipd.math.pcd.actors;
  * @since 1.0
  */
 public abstract class AbsMessage<T> implements Message {
-    private T message;
 
-    public AbsMessage(T message) {
-        this.message = message;
+    private T tag;
+    private T payload;
+
+    public AbsMessage() {}
+
+    public AbsMessage(T tag, T payload) {
+        this.tag = tag;
+        this.payload = payload;
     }
 
-    public T getMessage() {
-        return this.message;
+    public T getTag() {
+        return this.tag;
     }
+
+    public T getPayload() {
+        return this.payload;
+    }
+
 }

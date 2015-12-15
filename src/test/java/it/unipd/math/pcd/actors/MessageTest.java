@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,51 +37,29 @@
  */
 package it.unipd.math.pcd.actors;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 /**
- * A reference of an actor that allow to locate it in the actor system.
- * Using this reference it is possible to send a message among actors.
+ * Test cases about {@link Message} type.
  *
  * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class ActorRefImpl<T extends Message> implements ActorRef<T> {
+public class MessageTest extends AbsMessage<String> {
 
-    /**
-     * {@link ActorSystem} reference for sending messages
-     */
-    private ActorSystem actorSystem;
-
-    /**
-     * {@link ActorMode} type to set mode
-     */
-    private ActorSystem.ActorMode mode;
-
-    public ActorRefImpl(ActorSystem actorSystem, ActorSystem.ActorMode mode) {
-        this.actorSystem = actorSystem;
-        this.mode = mode;
+    public MessageTest() {
+        super("hello", "bye");
     }
 
-    /**
-     * Sends a {@code message} to another actor
-     *
-     * @param message The message to send
-     * @param to The actor to which sending the message
-     */
-    @Override
-    public void send(T message, ActorRef to) {
-        AbsActor<T> actor = (AbsActor<T>) actorSystem.getActorInstance(to);
-        actor.receive(message);
+    public void getTagTest() {
+        Assert.assertTrue(this.getTag().equals("hello"));
     }
 
-    /**
-     * Compare two actorRef
-     *
-     * @param to The ActorRef reference to compare with
-     * @return An integer that states if to is < = or > of this
-     */
-    @Override
-    public int compareTo(ActorRef to) {
-        return this.compareTo(to);
+    @Test
+    public void getPayloadTest() {
+        Assert.assertTrue(this.getPayload().equals("bye"));
     }
 }

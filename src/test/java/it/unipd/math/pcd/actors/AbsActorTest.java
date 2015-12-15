@@ -32,6 +32,7 @@ package it.unipd.math.pcd.actors;
 import java.text.MessageFormat;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -42,21 +43,34 @@ import org.junit.Test;
  * @since 1.0
  */
 public class AbsActorTest extends AbsActor<AbsMessage<String>> {
-    /*
+    /**
      * count field
      */
-    private int count = 0;
+    private int count;
 
-    public void receive(AbsMessage<String> message) {
-        switch (message.getMessage()) {
-        case "hello":
-            count = count + 1;
-            break;
-        case "bye":
-            count = count - 1;
-            break;
-        default:
-            System.out.println("Error");
-        }
+    @Before
+    public void setUp() {
+        count = 0;
     }
+
+    public void processNext() {}
+
+    // public void receive(AbsMessage<String> message) {
+    //     switch (message.getTag()) {
+    //     case "hello":
+    //         count = count + 1;
+    //         break;
+    //     case "bye":
+    //         count = count - 1;
+    //         break;
+    //     default:
+    //         System.out.println("Error");
+    //     }
+    // }
+
+    // @Test
+    // public void testReceive() {
+    //     this.receive(new MessageTest());
+    //     Assert.assertTrue(count == 1);
+    // }
 }

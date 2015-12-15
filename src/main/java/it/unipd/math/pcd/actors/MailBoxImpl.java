@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,71 +31,54 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 /**
- * Defines common properties of all actors.
+ * Implementation of a mail box system in the <code>pcd-actor</code> system that
+ * stores incoming messages of the defined type.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public abstract class AbsActor<T extends Message> implements Actor<T> {
+public class MailBoxImpl<T extends Message> implements MailBox<T> {
 
     /**
-     * Self-reference of the actor
+     * Blocking queue for messages storing
      */
-    protected ActorRef<T> self;
+    private BlockingQueue<T> box;
 
-    /**
-     * Sender of the current message
-     */
-    protected ActorRef<T> sender;
-
-    /**
-     * MailBox for incoming messages
-     */
-    protected MailBox<T> mailBox;
-
-    public AbsActor() {
-        mailBox = new MailBoxImpl<T>();
+    public MailBoxImpl() {
+        box = new LinkedBlockingQueue<T>();
     }
 
     /**
-     * Sets the self-referece.
-     *
-     * @param self The reference to itself
-     * @return The actor.
+     * Equeue incoming messages inside the structure of choice.
+     * @param message The type of messages the mail box can store.
      */
-    protected final Actor<T> setSelf(ActorRef<T> self) {
-        this.self = self;
-        return this;
+    public synchronized void enQueue(T message) {
+        box.add(message);
     }
 
     /**
-     * Defines the interface of the actor.
-     *
-     * @param message The type of messages the actor can receive
-     * @throws it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException If the message is not supported by
-     *         the actor.
+     * Remove the head of the queue
+     * @return The element previously stored in the head of the queue
      */
-    @Override
-    public void receive(T message) {
-        (new Thread(new Runnable() {
-                public void run() {
-                    while(true) {
-                        if(!mailBox.isEmpty()) {
-                            processNext();
-                        }
-                    }
-                }
-            }).setDaemon(true)).start();
-        mailBox.enQueue(message);
+    public synchronized T remove() {
+        return box.remove();
     }
 
-    public abstract void processNext();
+    /**
+     * Check if the queue is empty
+     * @return True if the queue is empty, false otherwise
+     */
+    public boolean isEmpty() {
+        return box.isEmpty();
+    }
 }

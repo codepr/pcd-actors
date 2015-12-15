@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,61 +27,37 @@
  * @version 1.0
  * @since 1.0
  */
-
-/**
- * Please, insert description here.
- *
- * @author Andrea Giacomo Baldan
- * @version 1.0
- * @since 1.0
- */
 package it.unipd.math.pcd.actors;
 
-/**
- * A reference of an actor that allow to locate it in the actor system.
- * Using this reference it is possible to send a message among actors.
- *
- * @author Andrea Giacomo Baldan
- * @version 1.0
- * @since 1.0
- */
-public class ActorRefImpl<T extends Message> implements ActorRef<T> {
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ActorSystemImpl extends AbsActorSystem {
 
     /**
-     * {@link ActorSystem} reference for sending messages
+     * Create an instance of {@link ActorRef}
+     * @param mode Possible mode to create an actor. Could be{@code LOCALE} or
+     * {@code REMOTE}.
+     * @return An instance to {@link ActorRef}
      */
-    private ActorSystem actorSystem;
-
-    /**
-     * {@link ActorMode} type to set mode
-     */
-    private ActorSystem.ActorMode mode;
-
-    public ActorRefImpl(ActorSystem actorSystem, ActorSystem.ActorMode mode) {
-        this.actorSystem = actorSystem;
-        this.mode = mode;
+	@Override
+    protected ActorRef createActorReference(ActorMode mode) {
+        return new ActorRefImpl(this, mode);
     }
 
     /**
-     * Sends a {@code message} to another actor
+     * Stops {@code actor}.
      *
-     * @param message The message to send
-     * @param to The actor to which sending the message
+     * @param actor The actor to be stopped
      */
     @Override
-    public void send(T message, ActorRef to) {
-        AbsActor<T> actor = (AbsActor<T>) actorSystem.getActorInstance(to);
-        actor.receive(message);
-    }
+    public void stop(ActorRef<?> actor) {}
 
     /**
-     * Compare two actorRef
-     *
-     * @param to The ActorRef reference to compare with
-     * @return An integer that states if to is < = or > of this
+     * Stops all actors of the system.
      */
     @Override
-    public int compareTo(ActorRef to) {
-        return this.compareTo(to);
-    }
+    public void stop() {}
 }
