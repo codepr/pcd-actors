@@ -70,8 +70,8 @@ public class ActorRefImpl<T extends Message> implements ActorRef<T> {
      */
     @Override
     public void send(T message, ActorRef to) {
-        AbsActor<T> actor = (AbsActor<T>) actorSystem.getActorInstance(to);
-        actor.receive(message);
+        AbsActor actor = (AbsActor) actorSystem.getActorInstance(to);
+        actor.enqueue(message);
     }
 
     /**

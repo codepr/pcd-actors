@@ -62,7 +62,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * Equeue incoming messages inside the structure of choice.
      * @param message The type of messages the mail box can store.
      */
-    public synchronized void enQueue(T message) {
+    public synchronized void enqueue(T message) {
         box.add(message);
     }
 
@@ -78,7 +78,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * Check if the queue is empty
      * @return True if the queue is empty, false otherwise
      */
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return box.isEmpty();
     }
 }

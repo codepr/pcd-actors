@@ -49,17 +49,17 @@ import org.junit.Test;
  * @since 1.0
  */
 public class MessageTest extends AbsMessage<String> {
-
     public MessageTest() {
-        super("hello", "bye");
+        super("multiply", "12", new ActorRefImpl<Message>(new ActorSystemImpl(), ActorSystem.ActorMode.LOCAL));
     }
 
+    @Test
     public void getTagTest() {
-        Assert.assertTrue(this.getTag().equals("hello"));
+        Assert.assertTrue(this.getTag().equals("multiply"));
     }
 
     @Test
     public void getPayloadTest() {
-        Assert.assertTrue(this.getPayload().equals("bye"));
+        Assert.assertTrue(this.getPayload().equals("12"));
     }
 }

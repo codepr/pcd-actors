@@ -83,19 +83,8 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      * @throws it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException If the message is not supported by
      *         the actor.
      */
-    @Override
-    public void receive(T message) {
-        (new Thread(new Runnable() {
-                public void run() {
-                    while(true) {
-                        if(!mailBox.isEmpty()) {
-                            processNext();
-                        }
-                    }
-                }
-            }).setDaemon(true)).start();
-        mailBox.enQueue(message);
-    }
 
-    public abstract void processNext();
+    public void enqueue(T message) {
+        mailBox.enqueue(message);
+    }
 }

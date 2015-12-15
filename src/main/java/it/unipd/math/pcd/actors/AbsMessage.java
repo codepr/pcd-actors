@@ -38,14 +38,14 @@ package it.unipd.math.pcd.actors;
  */
 public abstract class AbsMessage<T> implements Message {
 
-    private T tag;
-    private T payload;
+    private final T tag;
+    private final T payload;
+    private final ActorRef<Message> target;
 
-    public AbsMessage() {}
-
-    public AbsMessage(T tag, T payload) {
+    public AbsMessage(T tag, T payload, ActorRef<Message> target) {
         this.tag = tag;
         this.payload = payload;
+        this.target = target;
     }
 
     public T getTag() {
@@ -54,6 +54,10 @@ public abstract class AbsMessage<T> implements Message {
 
     public T getPayload() {
         return this.payload;
+    }
+
+    public ActorRef<Message> getTarget() {
+        return this.target;
     }
 
 }

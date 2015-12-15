@@ -51,7 +51,7 @@ public interface MailBox<T extends Message> {
      * Equeue incoming messages inside the structure of choice.
      * @param message The type of messages the mail box can store.
      */
-    void enQueue(T message);
+    void enqueue(T message);
 
     /**
      * Remove the head of the queue
