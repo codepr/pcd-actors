@@ -66,7 +66,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     }
 
     /**
-     * Sets the self-referece.
+     * Sets the self-reference.
      *
      * @param self The reference to itself
      * @return The actor.
@@ -74,17 +74,5 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected final Actor<T> setSelf(ActorRef<T> self) {
         this.self = self;
         return this;
-    }
-
-    /**
-     * Defines the interface of the actor.
-     *
-     * @param message The type of messages the actor can receive
-     * @throws it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException If the message is not supported by
-     *         the actor.
-     */
-
-    public void enqueue(T message) {
-        mailBox.enqueue(message);
     }
 }

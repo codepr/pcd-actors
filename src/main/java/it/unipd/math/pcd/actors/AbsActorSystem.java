@@ -84,10 +84,5 @@ public abstract class AbsActorSystem implements ActorSystem {
         return this.actorOf(actor, ActorMode.LOCAL);
     }
 
-    @Override
-    public synchronized Actor<? extends Message> getActorInstance(ActorRef<? extends Message> actorRef) {
-        return actors.get(actorRef);
-    }
-
     protected abstract ActorRef createActorReference(ActorMode mode);
 }

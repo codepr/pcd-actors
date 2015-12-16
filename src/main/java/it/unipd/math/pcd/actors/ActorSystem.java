@@ -69,14 +69,6 @@ public interface ActorSystem {
     ActorRef<? extends Message> actorOf(Class<? extends Actor> actor);
 
     /**
-     * Get the actor instance mapped with given actor reference.
-     *
-     * @param actorRef Reference to the actor instance
-     * @return An instance to the actor mapped with actorRef
-     */
-    Actor<? extends Message> getActorInstance(ActorRef<? extends Message> actorRef);
-
-    /**
      * Stops {@code actor}.
      *
      * @param actor The actor to be stopped

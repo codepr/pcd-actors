@@ -33,7 +33,6 @@ import java.text.MessageFormat;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException;
@@ -46,45 +45,4 @@ import it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException;
  * @since 1.0
  */
 public class AbsActorTest {
-    @Ignore
-    public static class TestActor extends AbsActor<AbsMessage<String>> {
-        private int count = 0;
-        public void receive(AbsMessage<String> message) {
-            if(message.getTag() instanceof String) {
-                switch (message.getTag()) {
-                case "hello":
-                    count = count + 1;
-                    break;
-                case "bye":
-                    count = count - 1;
-                    break;
-                case "multiply":
-                    count = (count + Integer.parseInt(message.getPayload())) * Integer.parseInt(message.getPayload());
-                default:
-                    System.out.println("Error");
-                }
-            }
-            else {
-                throw new UnsupportedMessageException(message);
-            }
-        }
-
-        public int getCount() {
-            return this.count;
-        }
-    }
-
-    private TestActor actor;
-
-    @Before
-    public void setUp() {
-        actor = new TestActor();
-    }
-
-    @Test
-    public void testReceive() {
-        actor.receive(new MessageTest());
-        System.out.println(MessageFormat.format("Message processed, count value: {0}", actor.getCount()));
-        Assert.assertTrue(actor.getCount() == 144);
-    }
 }

@@ -48,18 +48,6 @@ import org.junit.Test;
  * @version 1.0
  * @since 1.0
  */
-public class MessageTest extends AbsMessage<String> {
-    public MessageTest() {
-        super("multiply", "12", new ActorRefImpl<Message>(new ActorSystemImpl(), ActorSystem.ActorMode.LOCAL));
-    }
+public class MessageTest {
 
-    @Test
-    public void getTagTest() {
-        Assert.assertTrue(this.getTag().equals("multiply"));
-    }
-
-    @Test
-    public void getPayloadTest() {
-        Assert.assertTrue(this.getPayload().equals("12"));
-    }
 }

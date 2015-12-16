@@ -38,7 +38,7 @@ public class ActorSystemImpl extends AbsActorSystem {
 
     /**
      * Create an instance of {@link ActorRef}
-     * @param mode Possible mode to create an actor. Could be{@code LOCALE} or
+     * @param mode Possible mode to create an actor. Could be{@code LOCAL} or
      * {@code REMOTE}.
      * @return An instance to {@link ActorRef}
      */
