@@ -127,7 +127,10 @@ create an new instance of an actor. The result of this request is the actor refe
 Once a client have obtained the references to two actors it can ask the first to send a message to the second. Clearly,
 to obtain the real instance of an actor (not its actor reference) the actor system must be queried.
 
-![Message sending](http://www.math.unipd.it/~rcardin/pcd/pcd-actors/Message%20sending.png)
+![Message sending](http://www.math.unipd.it/~rcardin/pcd/pcd-actors/Message%20sending_1.png)
+
+Clearly, the `ActorRef` cannot be directly responsible of the `receive` method call on an `Actor`. The responsibility of
+an `ActorRef` is managing to let a `Message` to be put inside the `Actor`'s mailbox.
 
 Most of time, the client will be an actor itself, that ask to the self reference to send a message to another actor.
 
@@ -209,7 +212,7 @@ No, she definitely can not
 at least two implementation of this type: one that refers to local actors, and one that refers to remote actors. Its
 interaction with the rest of system is summarized in the following sequence diagram:
 
-![Message sending](http://www.math.unipd.it/~rcardin/pcd/pcd-actors/Message%20sending.png)
+![Message sending](http://www.math.unipd.it/~rcardin/pcd/pcd-actors/Message%20sending_1.png)
 
 > **Q**: The logical view that was given of the `Message` type is equal to its physical view (a.k.a. implementation), 
   isn't it?
@@ -275,7 +278,15 @@ I prefer that you don't add any additional framework to the original project. Th
 
 Yes, you can (and you should do too). 
 
+> **Q**: Can we add some methods to the given classes? 
 
+Yes, sure. You can add whatever method you think it could help. But, be aware: Do not modify the public interface of 
+these types because unit tests cannot rely on your custom interface.
+
+> **Q**: Should an `ActorRef` call directly the method `receive` of the corresponding `Actor`?
+ 
+Using the current architecture it is not possible. First of all, a `Message` has to be put into the `Actor`'s mailbox. 
+Then the `Message` becomes eligible for elaboration.
 
 ## License
 
