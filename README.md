@@ -172,6 +172,111 @@ whole system satisfies above requirements.
 
 You're free (which means that you're expected) to add your own tests to your implementation of the actor system.
 
+## F.A.Q.
+
+> **Q**: The meta framework contains four interfaces and two abstract classes. What should I have to implement?
+
+If you think about the testing process, you will sure understand that tests cannot be run on types that do not exist in
+the original process. Then, you're not expected to implement the `Message` interface, nor to give a concrete 
+implementation of `AbsActor`.
+
+> **Q**: Implementations should create abstract or concrete type?
+
+It depends: a user of `pcd-actors` has not to give an implementation of `ActorSystem`, then it is up to you to give a 
+full implementation of this type. Also `ActorRef` needs at least two implementation: one that refers to local actors,
+and one that refers to remote actors.
+
+> **Q**: We have to implement some synchronized data structures. `Actor` and `ActorSystem` have to be implemented has
+  thread their own?
+  
+No, they don't. These two types probably generates many threads to accomplish to their scope, but they are not intended
+to be thread on their own.
+
+> **Q**: `ActorSystem` is a Singleton?
+
+In an idyllic and perfect world we would used a *dependency injection* framework, to guarantee that `ActorSystem` will be
+instantiated only once. Unfortunately, we can't use such frameworks, due to their complexity. You can't implement 
+`ActorSystem` as a Singleton neither. Then, you have to be sure that every object that has to use an instance of 
+`ActorSystem` will use the same one.
+
+> **Q**: Can a user of `pcd-actors` extend `ActorSystem`?
+
+No, she definitely can not
+
+> **Q**: How will `ActorRef` interact with the rest of the system? Which is its role?
+
+`ActorRef` decouples the implementation of an actor from the way it is invoked by another actor. Then, there will be
+at least two implementation of this type: one that refers to local actors, and one that refers to remote actors. Its
+interaction with the rest of system is summarized in the following sequence diagram:
+
+![Message sending](http://www.math.unipd.it/~rcardin/pcd/pcd-actors/Message%20sending.png)
+
+> **Q**: The logical view that was given of the `Message` type is equal to its physical view (a.k.a. implementation), 
+  isn't it?
+    
+No, the logical view was given to describe the generic actor model. In `pcd-actors` `Message`s are completely free of
+implementation, from a library point of view.
+
+> **Q**: How does an `Actor` instance acquire the reference to the sender `ActorRef`
+
+You don't have to use the `Message` to implement this feature.
+
+> **Q**: A user of `pcd-actors` can use only the methods of the interfaces that are defined in the meta-framework, 
+  can't she?
+  
+Definitely yes. You can add which ever method you desire, but these will not be tested and valuated.
+
+> **Q**: Why can we send only messages of type `Message` to actors?
+
+This is a simplification. This way, we can define a custom protocol of communication among actors that is the same in
+all the implementations of the library and relies on the object oriented principles.
+
+> **Q**: If the meta-framework gives only the abstract class `AbsActorSystem`, how the hell will the tests to use the
+  library?
+  
+This is a good question. I think I will use some reflection to discover which of your classes extends `AbsActorSystem`.
+
+> **Q**: Do we have to implement the `receive` method of the type `Actor` for the project? 
+
+No, you don't. That is the hook that a user of `pcd-actors` have to implement to use the library.
+
+> **Q**: A client that intends to use both local and remote actors might interacts with them in the same way, 
+  doesn't she?
+  
+Local and remote actors have to expose the same interface to a client.
+
+> **Q**: How can I guess when the actor have to process the next message?
+
+This is the focal point of the project and I can't tell you how to implement this feature ;)
+
+> **Q**: Can a `Message` contain some logic or is it a simple placeholder that tells an actor what to do?
+  
+As previously stated a `Message` must not have any implementation. Refer to 
+[Akka/Java: Handling multiple message types inside a custom actor?](http://stackoverflow.com/questions/25917613/akka-java-handling-multiple-message-types-inside-a-custom-actor)
+on Stackoverflow to understand why.
+
+> **Q**: An `Actor` is an immutable object? Can an `Actor` change its interface?
+
+An actor can change it's interface in the original actor model. In `pcd-actors` we can operate a simplification and **we
+don't allow an actor to change its interface during time**. An actor has an internal state that changes during time. So
+it cannot be consider as an immutable object.
+
+> **Q**: An actor that sends a message to another actor have to receive back an ack/nack message, doesn't she?
+
+Nope. We do not want to implement any predefined protocol of communication between actors. It will be up to the end-user
+to define a protocol such that.
+
+> **Q**: Can we use some external framework to implement the meta-framework, such as Spring?
+
+I prefer that you don't add any additional framework to the original project. The only framework you can use is 
+[Mockito](http://mockito.org/) during unit test process
+
+> **Q**: Can we use external tools to check the style of the code we will produce?
+
+Yes, you can (and you should do too). 
+
+
+
 ## License
 
 The MIT License (MIT)
@@ -190,3 +295,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+

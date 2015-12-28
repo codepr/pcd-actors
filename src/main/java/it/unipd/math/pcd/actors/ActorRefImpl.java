@@ -78,7 +78,8 @@ public class ActorRefImpl<T extends Message> implements ActorRef<T> {
      * Compare two actorRef
      *
      * @param to The ActorRef reference to compare with
-     * @return An integer that states if to is < = or > of this
+     * @return An integer that states if to is minor, equal or major than this
+     * reference.
      */
     @Override
     public int compareTo(ActorRef to) {

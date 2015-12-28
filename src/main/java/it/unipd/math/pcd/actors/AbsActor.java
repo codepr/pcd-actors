@@ -63,6 +63,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
 
     public AbsActor() {
         mailBox = new MailBoxImpl<T>();
+        startProcessingLoop();
     }
 
     /**
@@ -74,5 +75,17 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected final Actor<T> setSelf(ActorRef<T> self) {
         this.self = self;
         return this;
+    }
+
+    private void startProcessingLoop() {
+        (new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        if(!mailBox.isEmpty()) {
+                            receive(mailBox.remove());
+                        }
+                    }
+                }
+            }).setDaemon(true)).start();
     }
 }

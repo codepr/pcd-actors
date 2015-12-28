@@ -56,10 +56,13 @@ public abstract class AbsActorSystem implements ActorSystem {
      */
     private Map<ActorRef<?>, Actor<?>> actors;
 
+<<<<<<< HEAD
     public AbsActorSystem() {
         actors = new HashMap<ActorRef<?>, Actor<?>>();
     }
 
+=======
+>>>>>>> upstream/master
     @Override
     public ActorRef<? extends Message> actorOf(Class<? extends Actor> actor, ActorMode mode) {
 
