@@ -68,6 +68,17 @@ following method:
 To do the magic, it is necessary to use the instance of `ActorSystem` described below. Messages can be sent only among 
 actors. No other type can send a message to an actor.
 
+#### Actor reference for testing purpose
+
+For *testing purpose*, it is necessary to give the possibility to retrieve the `Actor` associated to a reference. For 
+this reason, among the `test` types it's present the class `TestActorRef`. This class is a 
+[*decorator*](http://www.slideshare.net/RiccardoCardin/design-pattern-strutturali) of the `ActorRef`
+type, that adds a single method:
+    
+    protected abstract Actor<T> getUnderlyingActor(ActorSystem system);
+    
+Using this method it is possible to retrieve the corresponding `Actor`. The above method **must be implemented**.
+
 ### Message
 A `Message` is the piece of information that actor send among each others. Each message should be logically divided into
 three parts:
@@ -174,6 +185,26 @@ in the `scr/test/java` folder. Integration tests will be added in the next weeks
 whole system satisfies above requirements.
 
 You're free (which means that you're expected) to add your own tests to your implementation of the actor system.
+
+### Create an instance of `ActorSystem`
+Tests need to create an instance of a concrete class that implements `ActorSystem`. Using the current architecture of
+`pcd-actors`, it is not possible to know which is the concrete class *a priori*. One solution to instantiate an object of 
+a concrete implementation of `ActorSystem` is using *reflection* mechanism. 
+
+In detail, the class `ActorSystemFactory` scans the classpath searching for all subtypes of class `AbsActorSystem`. 
+Through the method `buildActorSystem` it builds an instance of the first class found.
+ 
+    ActorSystemFactory.buildActorSystem()
+ 
+To accomplish this need an external library is used. Such library is [`org.reflections`](https://github.com/ronmamo/reflections).
+The library is added as dependency to the project only during testing process. Then, it cannot be used main code. 
+
+    <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.9.10</version>
+        <scope>test</scope>
+    </dependency>
 
 ## F.A.Q.
 

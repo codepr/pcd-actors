@@ -37,21 +37,23 @@
  */
 package it.unipd.math.pcd.actors;
 
-import it.unipd.math.pcd.actors.impl.ActorSystemImpl;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
-import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
+import it.unipd.math.pcd.actors.utils.actors.ping.pong.PingPongActor;
+import it.unipd.math.pcd.actors.utils.actors.StoreActor;
+import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
+import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests features of an actors' system.
+ * Integration test suite on actor features.
  *
  * @author Riccardo Cardin
  * @version 1.0
  * @since 1.0
  */
-public class ActorSystemTest {
+public class ActorIT {
 
     private ActorSystem system;
 
@@ -60,32 +62,36 @@ public class ActorSystemTest {
      */
     @Before
     public void init() {
-        system = ActorSystemFactory.buildActorSystem();
+        this.system = ActorSystemFactory.buildActorSystem();
     }
 
     @Test
-    public void shouldCreateAnActorRefWithActorOfTest() {
-        ActorRef ref = system.actorOf(TrivialActor.class);
-        Assert.assertNotNull("A reference was created and it is not null", ref);
+    public void shouldBeAbleToSendAMessage() throws InterruptedException {
+        TestActorRef ref = new TestActorRef(system.actorOf(StoreActor.class));
+        StoreActor actor = (StoreActor) ref.getUnderlyingActor(system);
+        // Send a string to the actor
+        ref.send(new StoreMessage("Hello World"), ref);
+        // Wait that the message is processed
+        Thread.sleep(1000);
+        // Verify that the message is been processed
+        Assert.assertEquals("The message has to be received by the actor", "Hello World", actor.getData());
     }
 
     @Test
-    public void shouldCreateAnActorRefOfWithActorModeLocalTest() {
-        ActorRef ref = system.actorOf(TrivialActor.class, ActorSystem.ActorMode.LOCAL);
-        Assert.assertNotNull("A reference to a local actor was created and it is not null", ref);
-    }
+    public void shouldBeAbleToRespondToAMessage() throws InterruptedException {
+        TestActorRef pingRef = new TestActorRef(system.actorOf(PingPongActor.class));
+        TestActorRef pongRef = new TestActorRef(system.actorOf(PingPongActor.class));
 
-    // FIXME
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldCreateAnActorRefOfWithActorModeRemoteTest() {
-        ActorRef ref = system.actorOf(TrivialActor.class, ActorSystem.ActorMode.REMOTE);
-        Assert.assertNotNull("A reference to a remote actor was created and it is not null", ref);
-    }
+        pongRef.send(new PingMessage(), pingRef);
 
-    @Test
-    public void shouldBeAbleToCreateMoreThanOneActor() {
-        ActorRef ref1 = system.actorOf(TrivialActor.class);
-        ActorRef ref2 = system.actorOf(TrivialActor.class);
-        Assert.assertNotEquals("Two references that points to the same actor implementation are not equal", ref1, ref2);
+        Thread.sleep(2000);
+
+        PingPongActor pingActor = (PingPongActor) pingRef.getUnderlyingActor(system);
+        PingPongActor pongActor = (PingPongActor) pongRef.getUnderlyingActor(system);
+
+        Assert.assertEquals("A ping actor has received a ping message", "Ping",
+                pingActor.getLastMessage().getMessage());
+        Assert.assertEquals("A pong actor has received back a pong message", "Pong",
+                pongActor.getLastMessage().getMessage());
     }
 }
