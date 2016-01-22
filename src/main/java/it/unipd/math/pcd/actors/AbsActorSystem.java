@@ -55,6 +55,10 @@ public abstract class AbsActorSystem implements ActorSystem {
      */
     private Map<ActorRef<?>, Actor<?>> actors;
 
+    public AbsActorSystem() {
+        actors = new HashMap<ActorRef<?>, Actor<?>>();
+    }
+
     @Override
     public ActorRef<? extends Message> actorOf(Class<? extends Actor> actor, ActorMode mode) {
 
@@ -77,6 +81,20 @@ public abstract class AbsActorSystem implements ActorSystem {
     @Override
     public ActorRef<? extends Message> actorOf(Class<? extends Actor> actor) {
         return this.actorOf(actor, ActorMode.LOCAL);
+    }
+
+    @Override
+    public void stop(ActorRef<?> actor) {
+        ((AbsActor) actor.getValue()).stop();
+        actors.remove(actor);
+    }
+
+    @Override
+    public void stop() {
+        for(Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet) {
+            ((AbsActor) actor.getValue()).stop();
+        }
+        actors.clear();
     }
 
     protected abstract ActorRef createActorReference(ActorMode mode);
