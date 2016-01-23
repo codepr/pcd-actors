@@ -47,9 +47,9 @@ package it.unipd.math.pcd.actors.impl;
  */
 public abstract class AbsActorRef<T extends Message> implements ActorRef<T>{
 
-    protected final AbsActorSystem system;
+    protected final ActorSystem system;
 
-    public AbsActorSystem(ActorSystem system) {
+    public AbsActorRef(ActorSystem system) {
         this.system = (AbsActorSystem) system;
     }
     /**

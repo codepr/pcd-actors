@@ -64,7 +64,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * @param message The message to be stored
      */
     public synchronized void enqueue(T message) {
-        box.add(message)
+        box.add(message);
     }
 
     /**
@@ -72,7 +72,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * @return The last message stored inside the queue
      */
     public synchronized T remove() {
-        return box.remove()
+        return box.remove();
     }
 
     /**
