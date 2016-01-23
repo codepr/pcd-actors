@@ -86,13 +86,13 @@ public abstract class AbsActorSystem implements ActorSystem {
 
     @Override
     public void stop(ActorRef<?> actor) {
-        ((AbsActor) actor.getValue()).stop();
+        ((AbsActor) actors.get(actor)).stop();
         actors.remove(actor);
     }
 
     @Override
     public void stop() {
-        for(Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet) {
+        for(Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet()) {
             ((AbsActor) actor.getValue()).stop();
         }
         actors.clear();

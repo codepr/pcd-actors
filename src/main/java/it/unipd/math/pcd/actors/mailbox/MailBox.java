@@ -37,6 +37,7 @@
  */
 package it.unipd.math.pcd.actors.mailbox;
 
+import it.unipd.math.pcd.actors.Message;
 /**
  * A mailbox system in the <code>pcd-actors</code> system to store incoming
  * messages.

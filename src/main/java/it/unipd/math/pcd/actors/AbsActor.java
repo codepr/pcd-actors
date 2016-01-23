@@ -37,6 +37,10 @@
  */
 package it.unipd.math.pcd.actors;
 
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
+import it.unipd.math.pcd.actors.mailbox.MailBox;
+import it.unipd.math.pcd.actors.mailbox.MailBoxImpl;
+
 /**
  * Defines common properties of all actors.
  *
@@ -61,9 +65,14 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      */
     protected MailBox<T> mailBox;
 
+    /**
+     * Actor internal status flag
+     */
+    private volatile boolean active;
+
     public AbsActor() {
         mailBox = new MailBoxImpl<T>();
-        startProcessingLoop();
+        active = true;
     }
 
     /**
@@ -77,15 +86,13 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
-    private void startProcessingLoop() {
-        (new Thread(new Runnable() {
-                public void run() {
-                    while (true) {
-                        if(!mailBox.isEmpty()) {
-                            receive(mailBox.remove());
-                        }
-                    }
-                }
-            }).setDaemon(true)).start();
+    public void enQueue(T message) {
+        if (!active)
+            throw new NoSuchActorException();
+        mailBox.enqueue(message);
+    }
+
+    public void stop() {
+        active = false;
     }
 }

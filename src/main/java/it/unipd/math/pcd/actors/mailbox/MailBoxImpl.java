@@ -37,6 +37,7 @@
  */
 package it.unipd.math.pcd.actors.mailbox;
 
+import it.unipd.math.pcd.actors.Message;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
