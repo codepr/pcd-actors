@@ -1,7 +1,9 @@
 /bin/
 /target/
+/out/
 *.class
-workbench.xmi
+*.xmi
 .project
 .classpath
 .settings
+
