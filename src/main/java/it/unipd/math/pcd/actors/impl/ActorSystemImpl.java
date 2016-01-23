@@ -31,12 +31,20 @@ package it.unipd.math.pcd.actors.impl;
 
 import it.unipd.math.pcd.actors.AbsActorSystem;
 import it.unipd.math.pcd.actors.ActorRef;
+import it.unipd.math.pcd.actors.ActorSystem;
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ActorSystemImpl extends AbsActorSystem {
+
+    private ExecutorService eService;
+
+    public ActorSystemImpl() {
+        eService = Executors.newCachedThreadPool();
+    }
 
     /**
      * Create an instance of {@link ActorRef}
@@ -50,18 +58,4 @@ public class ActorSystemImpl extends AbsActorSystem {
             return new LocalActorRef(this);
         else return null;
     }
-
-    /**
-     * Stops {@code actor}.
-     *
-     * @param actor The actor to be stopped
-     */
-    @Override
-    public void stop(ActorRef<?> actor) {}
-
-    /**
-     * Stops all actors of the system.
-     */
-    @Override
-    public void stop() {}
 }
