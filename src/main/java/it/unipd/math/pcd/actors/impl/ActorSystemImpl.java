@@ -30,7 +30,10 @@
 package it.unipd.math.pcd.actors.impl;
 
 import it.unipd.math.pcd.actors.AbsActorSystem;
+import it.unipd.math.pcd.actors.Actor;
+import it.unipd.math.pcd.actors.AbsActor;
 import it.unipd.math.pcd.actors.ActorRef;
+import it.unipd.math.pcd.actors.Message;
 import it.unipd.math.pcd.actors.ActorSystem;
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import java.util.concurrent.Executors;
@@ -57,5 +60,27 @@ public class ActorSystemImpl extends AbsActorSystem {
         if(mode == ActorMode.LOCAL)
             return new LocalActorRef(this);
         else return null;
+    }
+
+    public void startSystem(Actor<?> actor) {
+        eService.execute(new StartLoop<>((AbsActor<Message>) actor));
+    }
+
+    private class StartLoop<T extends Message> implements Runnable {
+        public AbsActor<T> actor;
+
+        public StartLoop(Actor<T> actor) { this.actor = (AbsActor) actor; }
+
+        public void run() {
+            if(actor.isAlive()) {
+                while(true) {
+                    try {
+                        actor.receive(actor.getNextMessage());
+                    } catch (NoSuchActorException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }

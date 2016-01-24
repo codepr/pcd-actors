@@ -37,9 +37,8 @@
  */
 package it.unipd.math.pcd.actors.impl;
 
-import it.unipd.math.pcd.actors.ActorSystem;
-import it.unipd.math.pcd.actors.ActorRef;
-import it.unipd.math.pcd.actors.Message;
+import it.unipd.math.pcd.actors.*;
+
 /**
  * A reference of an actor that allow to locate it in the actor system.
  * Using this reference it is possible to send a message among actors.
@@ -50,10 +49,11 @@ import it.unipd.math.pcd.actors.Message;
  */
 public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
 
-    protected final ActorSystem system;
+    protected final AbsActorSystem system;
 
     public AbsActorRef(ActorSystem system) {
-        this.system = system;
+        this.system = (AbsActorSystem) system;
+        this.system.startSystem(this.system.getActor(this));
     }
     /**
      * Sends a {@code message} to another actor
@@ -63,7 +63,7 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
      */
     @Override
     public void send(T message, ActorRef to) {
-        // to insert in mailbox
+        ((AbsActor<T>) system.getActor(to)).enQueue(message);
     }
 
     @Override

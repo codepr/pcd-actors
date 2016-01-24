@@ -12,9 +12,4 @@ public class LocalActorRef<T extends  Message> extends AbsActorRef<T> {
     public LocalActorRef(ActorSystem system) {
         super(system);
     }
-
-    @Override
-    public void send(T message, ActorRef to) {
-
-    }
 }

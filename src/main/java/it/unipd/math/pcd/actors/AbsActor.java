@@ -68,11 +68,11 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     /**
      * Actor internal status flag
      */
-    private volatile boolean active;
+    private volatile boolean alive;
 
     public AbsActor() {
         mailBox = new MailBoxImpl<T>();
-        active = true;
+        alive = true;
     }
 
     /**
@@ -87,12 +87,22 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     }
 
     public void enQueue(T message) {
-        if (!active)
+        if (!alive)
             throw new NoSuchActorException();
         mailBox.enqueue(message);
     }
 
+    public T getNextMessage() {
+        if (!alive)
+            throw new NoSuchActorException();
+        return mailBox.remove();
+    }
+
     public void stop() {
-        active = false;
+        alive = false;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }

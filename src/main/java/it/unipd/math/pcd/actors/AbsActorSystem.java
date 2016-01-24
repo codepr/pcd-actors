@@ -98,5 +98,19 @@ public abstract class AbsActorSystem implements ActorSystem {
         actors.clear();
     }
 
+    /**
+     * Return the actor associated to a given ActorRef inside the HashMap
+     * @param ref reference to ActorRef
+     * @return The actor associated to ref
+     * @throws NoSuchActorException if no actor was found
+     */
+    public Actor<?> getActor(ActorRef<? extends Message> ref) throws NoSuchActorException {
+        Actor ret = actors.get(ref);
+        if(ret == null) throw new NoSuchActorException();
+        return ret;
+    }
+
+    public abstract void startSystem(Actor<?> actor);
+
     protected abstract ActorRef createActorReference(ActorMode mode);
 }

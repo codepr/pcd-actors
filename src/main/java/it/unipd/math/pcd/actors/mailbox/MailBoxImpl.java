@@ -64,7 +64,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * Enqueue incoming messages inside the structure of choice
      * @param message The message to be stored
      */
-    public synchronized void enqueue(T message) {
+    public void enqueue(T message) {
         box.add(message);
     }
 
@@ -72,15 +72,15 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * Remove the head message of the queue
      * @return The last message stored inside the queue
      */
-    public synchronized T remove() {
-        return box.remove();
+    public T remove() {
+        return box.poll();
     }
 
     /**
      * Check if the queue is empty
      * @return True if the queue is empty, false otherwise
      */
-    public synchronized boolean isEmpty() {
+    public boolean isEmpty() {
         return box.isEmpty();
     }
 }
