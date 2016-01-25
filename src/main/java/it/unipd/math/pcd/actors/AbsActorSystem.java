@@ -85,7 +85,10 @@ public abstract class AbsActorSystem implements ActorSystem {
     }
 
     @Override
-    public void stop(ActorRef<?> actor) {
+    public void stop(ActorRef<?> actor) throws NoSuchActorException {
+        if(!actors.containsValue(actor)) {
+            throw new NoSuchActorException();
+        }
         ((AbsActor) actors.get(actor)).stop();
         actors.remove(actor);
     }

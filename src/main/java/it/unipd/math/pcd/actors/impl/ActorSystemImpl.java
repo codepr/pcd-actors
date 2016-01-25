@@ -36,6 +36,8 @@ import it.unipd.math.pcd.actors.ActorRef;
 import it.unipd.math.pcd.actors.Message;
 import it.unipd.math.pcd.actors.ActorSystem;
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
+
+import java.util.IllegalFormatCodePointException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.HashMap;
@@ -59,7 +61,7 @@ public class ActorSystemImpl extends AbsActorSystem {
     protected ActorRef createActorReference(ActorMode mode) {
         if(mode == ActorMode.LOCAL)
             return new LocalActorRef(this);
-        else return null;
+        else throw new IllegalArgumentException();
     }
 
     public void startSystem(Actor<?> actor) {
