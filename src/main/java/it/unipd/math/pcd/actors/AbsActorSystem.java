@@ -104,7 +104,7 @@ public abstract class AbsActorSystem implements ActorSystem {
      * @return The actor associated to ref
      * @throws NoSuchActorException if no actor was found
      */
-    public Actor<?> getActor(ActorRef<? extends Message> ref) throws NoSuchActorException {
+    public Actor<?> getActor(ActorRef<?> ref) throws NoSuchActorException {
         Actor ret = actors.get(ref);
         if(ret == null) throw new NoSuchActorException();
         return ret;

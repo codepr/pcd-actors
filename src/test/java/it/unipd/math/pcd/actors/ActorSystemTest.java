@@ -78,8 +78,7 @@ public class ActorSystemTest {
     // FIXME
     @Test(expected = IllegalArgumentException.class)
     public void shouldCreateAnActorRefOfWithActorModeRemoteTest() {
-        ActorRef ref = system.actorOf(TrivialActor.class, ActorSystem.ActorMode.REMOTE);
-        Assert.assertNotNull("A reference to a remote actor was created and it is not null", ref);
+        system.actorOf(TrivialActor.class, ActorSystem.ActorMode.REMOTE);
     }
 
     @Test

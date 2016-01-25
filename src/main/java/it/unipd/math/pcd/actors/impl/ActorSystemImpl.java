@@ -72,13 +72,11 @@ public class ActorSystemImpl extends AbsActorSystem {
         public StartLoop(Actor<T> actor) { this.actor = (AbsActor) actor; }
 
         public void run() {
-            if(actor.isAlive()) {
-                while(true) {
-                    try {
-                        actor.receive(actor.getNextMessage());
-                    } catch (NoSuchActorException e) {
-                        e.printStackTrace();
-                    }
+            while (actor.isAlive()) {
+                try {
+                    actor.receive(actor.getNextMessage());
+                } catch (NoSuchActorException e) {
+                    e.printStackTrace();
                 }
             }
         }
