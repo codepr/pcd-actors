@@ -116,7 +116,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         }
     }
 
-    public boolean isAlive() {
+    private boolean isAlive() {
         return this.alive;
     }
 

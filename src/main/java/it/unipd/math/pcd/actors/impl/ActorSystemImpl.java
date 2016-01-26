@@ -30,18 +30,9 @@
 package it.unipd.math.pcd.actors.impl;
 
 import it.unipd.math.pcd.actors.AbsActorSystem;
-import it.unipd.math.pcd.actors.Actor;
-import it.unipd.math.pcd.actors.AbsActor;
 import it.unipd.math.pcd.actors.ActorRef;
-import it.unipd.math.pcd.actors.Message;
-import it.unipd.math.pcd.actors.ActorSystem;
-import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
-
-import java.util.IllegalFormatCodePointException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActorSystemImpl extends AbsActorSystem {
 

@@ -37,7 +37,11 @@
  */
 package it.unipd.math.pcd.actors.impl;
 
-import it.unipd.math.pcd.actors.*;
+import it.unipd.math.pcd.actors.ActorSystem;
+import it.unipd.math.pcd.actors.AbsActorSystem;
+import it.unipd.math.pcd.actors.ActorRef;
+import it.unipd.math.pcd.actors.AbsActor;
+import it.unipd.math.pcd.actors.Message;
 
 /**
  * A reference of an actor that allow to locate it in the actor system.
@@ -54,6 +58,7 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
     public AbsActorRef(ActorSystem system) {
         this.system = (AbsActorSystem) system;
     }
+
     /**
      * Sends a {@code message} to another actor
      *
@@ -65,6 +70,12 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
         ((AbsActor<T>) system.getActor(to)).enqueue(message);
         ((AbsActor<T>) system.getActor(to)).setSender(this);
     }
+
+    /**
+     * Compare two {@code ActorRef} references
+     * @param ref ActorRef reference to compare with
+     * @return 0 if ref equals this return 0, otherwise -1
+     */
 
     @Override
     public int compareTo(ActorRef ref) {
