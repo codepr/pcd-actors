@@ -63,11 +63,16 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
      */
     @Override
     public void send(T message, ActorRef to) {
-        ((AbsActor<T>) system.getActor(to)).enQueue(message);
+        ((AbsActor<T>) system.getActor(to)).enqueue(message);
+        ((AbsActor<T>) system.getActor(to)).setSender(this);
     }
 
     @Override
     public int compareTo(ActorRef ref) {
         return (this == ref) ? 0 : -1;
+    }
+
+    public void execute(Runnable r) {
+        system.startActorReceiveLoop(r);
     }
 }

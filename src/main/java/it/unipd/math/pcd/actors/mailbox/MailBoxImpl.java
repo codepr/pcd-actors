@@ -65,7 +65,11 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * @param message The message to be stored
      */
     public void enqueue(T message) {
-        box.add(message);
+        try {
+            box.put(message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,7 +77,13 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
      * @return The last message stored inside the queue
      */
     public T remove() {
-        return box.poll();
+        T message = null;
+        try {
+            message = box.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 
     /**

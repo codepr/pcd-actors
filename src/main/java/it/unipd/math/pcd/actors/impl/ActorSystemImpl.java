@@ -64,23 +64,7 @@ public class ActorSystemImpl extends AbsActorSystem {
         else throw new IllegalArgumentException();
     }
 
-    public void startSystem(Actor<?> actor) {
-        eService.execute(new StartLoop<>((AbsActor<Message>) actor));
-    }
-
-    private class StartLoop<T extends Message> implements Runnable {
-        public AbsActor<T> actor;
-
-        public StartLoop(Actor<T> actor) { this.actor = (AbsActor) actor; }
-
-        public void run() {
-            while (actor.isAlive()) {
-                try {
-                    actor.receive(actor.getNextMessage());
-                } catch (NoSuchActorException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void startActorReceiveLoop(Runnable r) {
+        eService.execute(r);
     }
 }

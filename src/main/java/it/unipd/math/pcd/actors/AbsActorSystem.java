@@ -113,7 +113,7 @@ public abstract class AbsActorSystem implements ActorSystem {
         return ret;
     }
 
-    public abstract void startSystem(Actor<?> actor);
+    public abstract void startActorReceiveLoop(Runnable r);
 
     protected abstract ActorRef createActorReference(ActorMode mode);
 }

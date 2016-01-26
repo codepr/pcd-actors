@@ -40,6 +40,7 @@ package it.unipd.math.pcd.actors;
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import it.unipd.math.pcd.actors.mailbox.MailBox;
 import it.unipd.math.pcd.actors.mailbox.MailBoxImpl;
+import it.unipd.math.pcd.actors.impl.AbsActorRef;
 
 /**
  * Defines common properties of all actors.
@@ -70,9 +71,12 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      */
     private volatile boolean alive;
 
+    private volatile boolean looping;
+
     public AbsActor() {
-        mailBox = new MailBoxImpl<T>();
-        alive = true;
+        this.mailBox = new MailBoxImpl<T>();
+        this.alive = true;
+        this.looping = false;
     }
 
     /**
@@ -86,23 +90,48 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
-    public void enQueue(T message) {
+    public final  void setSender(ActorRef<T> sender) {
+        this.sender = sender;
+    }
+
+    public void enqueue(T message) {
         if (!alive)
             throw new NoSuchActorException();
         mailBox.enqueue(message);
+        if(!this.looping) start();
     }
 
     public T getNextMessage() {
         if (!alive)
             throw new NoSuchActorException();
-        return mailBox.remove();
+        return this.mailBox.remove();
     }
 
     public void stop() {
-        alive = false;
+        this.alive = false;
+        this.looping = false;
+        // must empty mailbox
     }
 
     public boolean isAlive() {
-        return alive;
+        return this.alive;
+    }
+
+    public synchronized void start() {
+        ((AbsActorRef<T>) self).execute(new ReceiveLoop());
+        this.alive = true;
+    }
+
+    private class ReceiveLoop implements Runnable {
+
+        public void run() {
+            while (isAlive()) {
+                try {
+                    receive(getNextMessage());
+                } catch (NoSuchActorException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
