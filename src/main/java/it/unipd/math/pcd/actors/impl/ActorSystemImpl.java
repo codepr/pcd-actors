@@ -64,6 +64,7 @@ public class ActorSystemImpl extends AbsActorSystem {
         else throw new IllegalArgumentException();
     }
 
+    @Override
     public void startActorReceiveLoop(Runnable r) {
         eService.execute(r);
     }

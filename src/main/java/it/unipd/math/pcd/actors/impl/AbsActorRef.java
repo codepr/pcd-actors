@@ -53,7 +53,6 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
 
     public AbsActorRef(ActorSystem system) {
         this.system = (AbsActorSystem) system;
-//        this.system.startSystem(this.system.getActor(this));
     }
     /**
      * Sends a {@code message} to another actor

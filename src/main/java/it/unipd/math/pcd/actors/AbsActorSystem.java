@@ -38,9 +38,8 @@
 package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A map-based implementation of the actor system.
@@ -57,7 +56,7 @@ public abstract class AbsActorSystem implements ActorSystem {
     private Map<ActorRef<?>, Actor<?>> actors;
 
     public AbsActorSystem() {
-        actors = new HashMap<ActorRef<?>, Actor<?>>();
+        actors = new HashMap<>();
     }
 
     @Override
@@ -86,7 +85,7 @@ public abstract class AbsActorSystem implements ActorSystem {
 
     @Override
     public void stop(ActorRef<?> actor) throws NoSuchActorException {
-        if(!actors.containsValue(actor)) {
+        if(!actors.containsKey(actor)) {
             throw new NoSuchActorException();
         }
         ((AbsActor) actors.get(actor)).stop();

@@ -71,10 +71,13 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      */
     private volatile boolean alive;
 
+    /**
+     * Looping to apply receive method on incoming messages status flag
+     */
     private volatile boolean looping;
 
     public AbsActor() {
-        this.mailBox = new MailBoxImpl<T>();
+        this.mailBox = new MailBoxImpl<>();
         this.alive = true;
         this.looping = false;
     }
@@ -90,7 +93,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
-    public final  void setSender(ActorRef<T> sender) {
+    public final void setSender(ActorRef<T> sender) {
         this.sender = sender;
     }
 
@@ -101,29 +104,36 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         if(!this.looping) start();
     }
 
-    public T getNextMessage() {
-        if (!alive)
-            throw new NoSuchActorException();
-        return this.mailBox.remove();
-    }
-
     public void stop() {
         this.alive = false;
         this.looping = false;
-        // must empty mailbox
+        while(!mailBox.isEmpty()) {
+            try {
+                receive(getNextMessage());
+            } catch (NoSuchActorException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean isAlive() {
         return this.alive;
     }
 
-    public synchronized void start() {
+    private T getNextMessage() {
+        if (!alive)
+            throw new NoSuchActorException();
+        return this.mailBox.remove();
+    }
+
+    private synchronized void start() {
         ((AbsActorRef<T>) self).execute(new ReceiveLoop());
         this.alive = true;
+        this.looping = true;
     }
 
     private class ReceiveLoop implements Runnable {
-
+        @Override
         public void run() {
             while (isAlive()) {
                 try {
