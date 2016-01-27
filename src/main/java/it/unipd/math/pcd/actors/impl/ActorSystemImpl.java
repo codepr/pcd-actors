@@ -36,8 +36,14 @@ import java.util.concurrent.ExecutorService;
 
 public class ActorSystemImpl extends AbsActorSystem {
 
+    /**
+     * ExecutorService to generate a thread pool
+     */
     private ExecutorService eService;
 
+    /**
+     * Constructor to initialize {@code eService} as a {@code newCachedThreadPool}
+     */
     public ActorSystemImpl() {
         eService = Executors.newCachedThreadPool();
     }
@@ -56,7 +62,7 @@ public class ActorSystemImpl extends AbsActorSystem {
     }
 
     @Override
-    public void startActorReceiveLoop(Runnable r) {
-        eService.execute(r);
+    public void startActorReceiveLoop(Runnable receivingLoop) {
+        eService.execute(receivingLoop);
     }
 }

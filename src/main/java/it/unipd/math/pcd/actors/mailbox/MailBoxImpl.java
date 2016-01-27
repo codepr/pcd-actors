@@ -57,7 +57,7 @@ public class MailBoxImpl<T extends Message> implements MailBox<T> {
     private BlockingQueue<T> box;
 
     public MailBoxImpl() {
-        box = new LinkedBlockingQueue<T>();
+        box = new LinkedBlockingQueue<>();
     }
 
     /**

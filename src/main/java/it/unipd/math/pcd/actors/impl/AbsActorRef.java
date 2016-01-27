@@ -66,6 +66,7 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
      * @param to The actor to which sending the message
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void send(T message, ActorRef to) {
         ((AbsActor<T>) system.getActor(to)).enqueue(message);
         ((AbsActor<T>) system.getActor(to)).setSender(this);

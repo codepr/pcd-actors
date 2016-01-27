@@ -101,6 +101,11 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         this.sender = sender;
     }
 
+    /**
+     * Enqueue incoming messages inside the mailbox
+     * @param message The message to be stored
+     * @throws NoSuchActorException if actor status is not alive
+     */
     public void enqueue(T message) {
         if (!alive)
             throw new NoSuchActorException();
@@ -108,6 +113,10 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         if(!this.looping) start();
     }
 
+    /**
+     * Stops the actor from receiving incoming messages, process remaining messages
+     * in the mailbox and sets {@code alive} to false
+     */
     public void stop() {
         this.alive = false;
         this.looping = false;
@@ -120,22 +129,38 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         }
     }
 
+    /**
+     * Return the actor status
+     * @return True if alive, otherwise false
+     */
     private boolean isAlive() {
         return this.alive;
     }
 
+    /**
+     * Remove the head message from the mailbox, ready to be processed
+     * @throws NoSuchActorException if the actor is not alive (stopped)
+     * @return the head message of the mailbox if there's any
+     */
     private T getNextMessage() {
         if (!alive)
             throw new NoSuchActorException();
         return this.mailBox.remove();
     }
 
-    private synchronized void start() {
+    /**
+     * Starts the receiving loop for the actor, set it's status to alive and looping
+     */
+    private synchronized  void start() {
         ((AbsActorRef<T>) self).execute(new ReceiveLoop());
         this.alive = true;
         this.looping = true;
     }
 
+    /**
+     * Runnable type, process all messages inside the mailbox for the full duration
+     * of the alive status of the actor
+     */
     private class ReceiveLoop implements Runnable {
         @Override
         public void run() {

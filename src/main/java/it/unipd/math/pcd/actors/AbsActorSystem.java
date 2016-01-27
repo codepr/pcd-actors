@@ -112,7 +112,11 @@ public abstract class AbsActorSystem implements ActorSystem {
         return ret;
     }
 
-    public abstract void startActorReceiveLoop(Runnable r);
+    /**
+     * Execute a runnable with {@code eService} instance of Executor
+     * @param receivingLoop Runnable type to be executed
+     */
+    public abstract void startActorReceiveLoop(Runnable receivingLoop);
 
     protected abstract ActorRef createActorReference(ActorMode mode);
 }
