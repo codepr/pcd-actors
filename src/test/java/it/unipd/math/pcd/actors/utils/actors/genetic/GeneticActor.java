@@ -8,10 +8,11 @@ import it.unipd.math.pcd.actors.utils.messages.genetic.*;
  */
 public class GeneticActor extends AbsActor<GeneticMessage> {
 
-    private final double mutationRate = 0.015;
-    private final boolean elitism = true;
-    private final int tournamentSize = 5;
-    private final double uniformRate = 0.5;
+    private static final double mutationRate = 0.015;
+    private static final boolean elitism = true;
+    private static final int tournamentSize = 5;
+    private static final double uniformRate = 0.5;
+
     private int fitness = 0;
     Individual[] individuals;
     private byte[] solution = new byte[32];
@@ -37,21 +38,11 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
         return fittest;
     }
 
-    public Individual getFittest(Individual[] pop) {
-        Individual fittest = pop[0];
-        // Loop through individuals to find fittest
-        for (int i = 0; i < pop.length; i++) {
-            if (fittest.getFitness() <= pop[i].getFitness()) {
-                fittest = pop[i];
-            }
-        }
-        return fittest;
-    }
-
     private int calcFitness() {
         int fitness;
         Individual indiv = getFittest();
         fitness = indiv.getFitness();
+        this.fitness = fitness;
         return fitness;
     }
 
@@ -130,7 +121,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
             }
 
             individuals = newPopulation;
-            this.fitness = this.calcFitness();
+            calcFitness();
         } else if (message instanceof Get) {
             self.send(new Result(fitness), sender);
         } else if (message instanceof GetSolution) {
@@ -139,7 +130,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
     }
 
     public int getFitness() {
-        return this.fitness;
+        return fitness;
     }
 
     public String printFittest() {
@@ -166,12 +157,12 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
         }
 
         public int size() {
-            return this.genes.length;
+            return genes.length;
         }
 
         public int getFitness() {
             int fitness = 0;
-            // Loop through our individuals genes and compare them to our cadidates
+            // Loop through individual's genes and compare them to the solution ones
             for (int i = 0; i < genes.length; i++) {
                 if (genes[i] == solution[i]) {
                     fitness++;

@@ -151,7 +151,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     /**
      * Starts the receiving loop for the actor, set it's status to alive and looping
      */
-    private synchronized  void start() {
+    private synchronized void start() {
         ((AbsActorRef<T>) self).execute(new ReceiveLoop());
         this.alive = true;
         this.looping = true;

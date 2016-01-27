@@ -43,11 +43,13 @@ import it.unipd.math.pcd.actors.utils.actors.counter.CounterActor;
 import it.unipd.math.pcd.actors.utils.actors.ping.pong.PingPongActor;
 import it.unipd.math.pcd.actors.utils.actors.StoreActor;
 import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
+import it.unipd.math.pcd.actors.utils.messages.counter.Decrement;
 import it.unipd.math.pcd.actors.utils.messages.counter.Increment;
 import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * Integration test suite on actor features.
@@ -110,5 +112,31 @@ public class ActorIT {
 
         Assert.assertEquals("A counter that was incremented 1000 times should be equal to 1000",
                 200, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
+    }
+
+    @Test
+    public void shouldSynchronizedIncrementOrDecrement() throws InterruptedException {
+        final TestActorRef counter = new TestActorRef(system.actorOf(CounterActor.class));
+/*        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 5500; i++) {
+                    TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
+                    adder.send(new Increment(), counter);
+                }
+            }
+        }).start();*/
+        for (int i = 0; i < 2250; i++) {
+            TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
+            adder.send(new Increment(), counter);
+        }
+/*        for (int i = 0; i < 500; i++) {
+            TestActorRef subtractor = new TestActorRef(system.actorOf(TrivialActor.class));
+            subtractor.send(new Decrement(), counter);
+        }*/
+
+        Thread.sleep(2000);
+        Assert.assertEquals("A counter that was incremented 200 times and decremented 50 times should equals 150",
+                2250, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
 }
