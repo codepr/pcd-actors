@@ -93,6 +93,10 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
+    /**
+     * Sets the reference to the sender of the current message
+     * @param sender The reference to the sender of the current message
+     */
     public final void setSender(ActorRef<T> sender) {
         this.sender = sender;
     }
