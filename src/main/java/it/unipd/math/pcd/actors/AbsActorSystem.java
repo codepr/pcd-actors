@@ -39,7 +39,7 @@ package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A map-based implementation of the actor system.
@@ -56,7 +56,7 @@ public abstract class AbsActorSystem implements ActorSystem {
     private Map<ActorRef<?>, Actor<?>> actors;
 
     public AbsActorSystem() {
-        actors = new HashMap<>();
+        actors = new ConcurrentHashMap<>();
     }
 
     @Override

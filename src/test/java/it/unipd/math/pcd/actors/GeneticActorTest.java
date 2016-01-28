@@ -24,7 +24,7 @@ public class GeneticActorTest {
     }
 
     @Test
-    public void shouldCalcFittest() throws InterruptedException {
+    public void shouldCalcFittestIndividual() throws InterruptedException {
         TestActorRef genRef = new TestActorRef(system.actorOf(GeneticActor.class));
         byte[] solution = new byte[32];
         for (int i = 0; i < solution.length; i++) {
@@ -34,7 +34,7 @@ public class GeneticActorTest {
         solution[18] = 0;
         solution[23] = 0;
         GeneticActor genActor = (GeneticActor) genRef.getUnderlyingActor(system);
-        genActor.setGenesAndSolution(15, solution);
+        genActor.initPopulationAndSolution(15, solution);
         while(((GeneticActor) genRef.getUnderlyingActor(system)).getFitness() < 32) {
             TestActorRef nature = new TestActorRef(system.actorOf(TrivialActor.class));
             nature.send(new Evolve(), genRef);

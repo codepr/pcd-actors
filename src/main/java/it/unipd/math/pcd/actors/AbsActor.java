@@ -106,7 +106,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      * @param message The message to be stored
      * @throws NoSuchActorException if actor status is not alive
      */
-    public void enqueue(T message) {
+    public synchronized void enqueue(T message) {
         if (!alive)
             throw new NoSuchActorException();
         mailBox.enqueue(message);
@@ -164,7 +164,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     private class ReceiveLoop implements Runnable {
         @Override
         public void run() {
-            while (isAlive()) {
+            while (isAlive() == true) {
                 try {
                     receive(getNextMessage());
                 } catch (NoSuchActorException e) {

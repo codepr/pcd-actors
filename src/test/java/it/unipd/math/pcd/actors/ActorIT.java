@@ -117,7 +117,7 @@ public class ActorIT {
     @Test
     public void shouldSynchronizedIncrementOrDecrement() throws InterruptedException {
         final TestActorRef counter = new TestActorRef(system.actorOf(CounterActor.class));
-/*        new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 5500; i++) {
@@ -125,18 +125,23 @@ public class ActorIT {
                     adder.send(new Increment(), counter);
                 }
             }
-        }).start();*/
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1500; i++) {
+                    TestActorRef subtractor = new TestActorRef(system.actorOf(TrivialActor.class));
+                    subtractor.send(new Decrement(), counter);
+                }
+            }
+        }).start();
         for (int i = 0; i < 2250; i++) {
             TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
-            adder.send(new Increment(), counter);
+            adder.send(new Decrement(), counter);
         }
-/*        for (int i = 0; i < 500; i++) {
-            TestActorRef subtractor = new TestActorRef(system.actorOf(TrivialActor.class));
-            subtractor.send(new Decrement(), counter);
-        }*/
 
         Thread.sleep(2000);
-        Assert.assertEquals("A counter that was incremented 200 times and decremented 50 times should equals 150",
-                2250, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
+        Assert.assertEquals("Final counter value should be 1750",
+                1750, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
 }
