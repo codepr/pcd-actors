@@ -72,7 +72,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
     /**
      * Loops through the population sample to find the fittest member
      * (e.g. the closer to the solution in terms of number of equal genes)
-     * @return The fittest individual inside the current population of the current generation
+     * @return A reference to the fittest individual inside the population of the current generation
      */
     public Individual getFittest() {
         Individual fittest = individuals[0];
@@ -88,7 +88,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
     /**
      * Calculate the fitness value of the fittest individual in the current generation
      * inside the population sample
-     * @return The fitness of the fittest individual
+     * @return The fitness value of the fittest individual
      */
     private int calcFitness() {
         int fitness;
@@ -101,7 +101,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
     /**
      * Tournament selection system used to get the new fittest member of the next generation
      * @param pop Population sample, will give the members to be challenged inside the tournament
-     * @return The fittest member survived in the tournament
+     * @return A reference to the fittest member survived in the tournament
      */
     private Individual tournamentSelection(Individual[] pop) {
         Individual[] tournament = new Individual[tournamentSize];
@@ -142,7 +142,7 @@ public class GeneticActor extends AbsActor<GeneticMessage> {
      * generate a new individual resulted of a mix between his two parents
      * @param indiv1 Parent one
      * @param indiv2 Parent two
-     * @return Newborn generated mixing two parents Individual
+     * @return A reference to the newborn generated mixing two parents Individual
      */
     public Individual crossover(Individual indiv1, Individual indiv2) {
         Individual newBorn = new Individual();
