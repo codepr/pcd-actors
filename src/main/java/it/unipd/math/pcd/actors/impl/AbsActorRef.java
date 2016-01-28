@@ -53,6 +53,9 @@ import it.unipd.math.pcd.actors.Message;
  */
 public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
 
+    /**
+     * Reference to the {@code system}
+     */
     protected final AbsActorSystem system;
 
     public AbsActorRef(ActorSystem system) {
@@ -83,7 +86,11 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
         return (this == ref) ? 0 : -1;
     }
 
-    public void execute(Runnable r) {
-        system.startActorReceiveLoop(r);
+    /**
+     * Execute a runnable using {@code system}
+     * @param receivingLoop Runnable type to be executed
+     */
+    public void execute(Runnable receivingLoop) {
+        system.startActorReceiveLoop(receivingLoop);
     }
 }

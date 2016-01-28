@@ -61,6 +61,10 @@ public class ActorSystemImpl extends AbsActorSystem {
         else throw new IllegalArgumentException();
     }
 
+    /**
+     * Execute a runnable with {@code eService} instance of Executor
+     * @param receivingLoop Runnable type to be executed
+     */
     @Override
     public void startActorReceiveLoop(Runnable receivingLoop) {
         eService.execute(receivingLoop);

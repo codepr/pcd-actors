@@ -118,5 +118,11 @@ public abstract class AbsActorSystem implements ActorSystem {
      */
     public abstract void startActorReceiveLoop(Runnable receivingLoop);
 
+    /**
+     * Create an instance of {@link ActorRef}
+     * @param mode Possible mode to create an actor. Could be{@code LOCAL} or
+     * {@code REMOTE}.
+     * @return An instance to {@link ActorRef}
+     */
     protected abstract ActorRef createActorReference(ActorMode mode);
 }
