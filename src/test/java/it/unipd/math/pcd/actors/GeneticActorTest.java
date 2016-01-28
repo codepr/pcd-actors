@@ -35,7 +35,7 @@ public class GeneticActorTest {
         solution[4] = 0;
         solution[18] = 0;
         solution[23] = 0;
-        
+
         GeneticActor popSampleActor = (GeneticActor) popSampleRef.getUnderlyingActor(system);
         popSampleActor.initPopulationAndSolution(15, solution);
         while(((GeneticActor) popSampleRef.getUnderlyingActor(system)).getFitness() < 32) {
