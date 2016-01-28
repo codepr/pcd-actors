@@ -1,7 +1,7 @@
 package it.unipd.math.pcd.actors.utils.actors.bouncer;
 
 import it.unipd.math.pcd.actors.AbsActor;
-import it.unipd.math.pcd.actors.utils.messages.bouncer.*;
+import it.unipd.math.pcd.actors.utils.messages.bouncer.BounceMessage;
 
 /**
  * Created by codep on 1/28/16.

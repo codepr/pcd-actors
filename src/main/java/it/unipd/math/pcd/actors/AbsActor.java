@@ -118,7 +118,6 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      * in the mailbox and sets {@code alive} to false
      */
     public void stop() {
-        this.alive = false;
         this.looping = false;
         while(!mailBox.isEmpty()) {
             try {
@@ -127,6 +126,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
                 e.printStackTrace();
             }
         }
+        this.alive = false;
     }
 
     /**
@@ -137,6 +137,11 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this.alive;
     }
 
+    /**
+     * Return the receiving loop status
+     * @return True if the actor is looping, otherwise false
+     */
+    private boolean isLooping() { return this.looping; }
     /**
      * Remove the head message from the mailbox, ready to be processed
      * @throws NoSuchActorException if the actor is not alive (stopped)
@@ -152,9 +157,9 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      * Starts the receiving loop for the actor, set it's status to alive and looping
      */
     private synchronized void start() {
-        ((AbsActorRef<T>) self).execute(new ReceiveLoop());
         this.alive = true;
         this.looping = true;
+        ((AbsActorRef<T>) self).execute(new ReceiveLoop());
     }
 
     /**
@@ -164,7 +169,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     private class ReceiveLoop implements Runnable {
         @Override
         public void run() {
-            while (isAlive() == true) {
+            while (isAlive() && isLooping()) {
                 try {
                     receive(getNextMessage());
                 } catch (NoSuchActorException e) {

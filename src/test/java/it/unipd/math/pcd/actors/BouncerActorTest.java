@@ -1,5 +1,6 @@
 package it.unipd.math.pcd.actors;
 
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.bouncer.BouncerActor;
 import it.unipd.math.pcd.actors.utils.messages.bouncer.BounceMessage;
@@ -32,5 +33,6 @@ public class BouncerActorTest {
 
         Thread.sleep(2000);
         Assert.assertEquals("Should answer hello", "42", ((BouncerActor) stater.getUnderlyingActor(system)).getLastStatement());
+        Assert.assertEquals("Should answer hello", "42", ((BouncerActor) oracle.getUnderlyingActor(system)).getLastStatement());
     }
 }
