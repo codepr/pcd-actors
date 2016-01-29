@@ -117,7 +117,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      * Stops the actor from receiving incoming messages, process remaining messages
      * in the mailbox and sets {@code alive} to false
      */
-    public void stop() {
+    public synchronized void stop() {
         this.looping = false;
         while(!mailBox.isEmpty()) {
             try {
