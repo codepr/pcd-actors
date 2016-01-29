@@ -32,7 +32,7 @@ public class BouncerActorTest {
         stater.send(new BounceMessage("hi"), oracle);
 
         Thread.sleep(2000);
-        Assert.assertEquals("Should answer hello", "42", ((BouncerActor) stater.getUnderlyingActor(system)).getLastStatement());
-        Assert.assertEquals("Should answer hello", "42", ((BouncerActor) oracle.getUnderlyingActor(system)).getLastStatement());
+        Assert.assertEquals("Should answer hello", "Hello", ((BouncerActor) stater.getUnderlyingActor(system)).getLastStatement());
+        Assert.assertEquals("Should answer hello", "hi", ((BouncerActor) oracle.getUnderlyingActor(system)).getLastStatement());
     }
 }

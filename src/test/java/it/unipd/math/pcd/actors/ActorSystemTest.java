@@ -119,6 +119,7 @@ public class ActorSystemTest {
     public void shouldStopAllActorsAndTheseCouldNotStoppedASecondTime() {
         ActorRef ref1 = system.actorOf(TrivialActor.class);
         ActorRef ref2 = system.actorOf(TrivialActor.class);
+        ref1.send(new TrivialMessage(), ref1);
         system.stop();
         system.stop(ref1);
     }
