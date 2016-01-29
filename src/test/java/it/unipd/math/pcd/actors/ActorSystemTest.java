@@ -107,6 +107,8 @@ public class ActorSystemTest {
         system.stop(ref1);
     }
 
+    /************* ADDITIONAL TESTS *****************/
+
     @Test(expected = NoSuchActorException.class)
     public void shouldStopAllActorsAndTheseCouldNotBeAbleToReceiveNewMessages() {
         ActorRef ref1 = system.actorOf(TrivialActor.class);

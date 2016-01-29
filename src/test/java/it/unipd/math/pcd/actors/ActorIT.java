@@ -40,9 +40,11 @@ package it.unipd.math.pcd.actors;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.actors.counter.CounterActor;
+import it.unipd.math.pcd.actors.utils.actors.longtask.LongTaskActor;
 import it.unipd.math.pcd.actors.utils.actors.ping.pong.PingPongActor;
 import it.unipd.math.pcd.actors.utils.actors.StoreActor;
 import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
+import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
 import it.unipd.math.pcd.actors.utils.messages.counter.Decrement;
 import it.unipd.math.pcd.actors.utils.messages.counter.Increment;
 import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
@@ -115,6 +117,8 @@ public class ActorIT {
                 200, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
 
+    /************* ADDITIONAL TESTS *****************/
+
     @Test
     public void shouldSynchronizedIncrementOrDecrement() throws InterruptedException {
         final TestActorRef counter = new TestActorRef(system.actorOf(CounterActor.class));
@@ -144,6 +148,32 @@ public class ActorIT {
         Thread.sleep(2000);
         Assert.assertEquals("Final counter value should be 1750",
                 1750, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
+    }
+
+    @Test
+    public void shouldProcessRemainingMessagesAfterStop() {
+        TestActorRef ref1 = new TestActorRef(system.actorOf(LongTaskActor.class));
+        TestActorRef ref2 = new TestActorRef(system.actorOf(TrivialActor.class));
+        LongTaskActor lta = (LongTaskActor) ref1.getUnderlyingActor(system);
+
+        for (int i = 0; i < 3; i++) {
+            ref2.send(new TrivialMessage(), ref1);
+        }
+        system.stop(ref1);
+        Assert.assertEquals("should read Done 3 times", "Done 3 times", lta.getTask());
+    }
+
+    @Test
+    public void shouldProcessRemainingMessagesAfterSystemStopped() {
+        TestActorRef ref1 = new TestActorRef(system.actorOf(LongTaskActor.class));
+        TestActorRef ref2 = new TestActorRef(system.actorOf(TrivialActor.class));
+        LongTaskActor lta = (LongTaskActor) ref1.getUnderlyingActor(system);
+
+        for (int i = 0; i < 3; i++) {
+            ref2.send(new TrivialMessage(), ref1);
+        }
+        system.stop();
+        Assert.assertEquals("should read Done 3 times", "Done 3 times", lta.getTask());
     }
 
     /**

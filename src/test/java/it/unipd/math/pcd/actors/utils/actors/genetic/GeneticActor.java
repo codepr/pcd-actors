@@ -41,6 +41,7 @@ import it.unipd.math.pcd.actors.AbsActor;
 import it.unipd.math.pcd.actors.utils.messages.genetic.*;
 
 /**
+ * Not strictly inherent to testing suite (curiosity purpose)
  * Really simple implementation of a genetic algorithm on binary genomes population
  * @author Andrea Giacomo Baldan
  * @version 1.0

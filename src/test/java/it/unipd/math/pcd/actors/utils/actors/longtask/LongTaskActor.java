@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,51 +31,41 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-package it.unipd.math.pcd.actors;
+package it.unipd.math.pcd.actors.utils.actors.longtask;
 
-import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
-import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import it.unipd.math.pcd.actors.AbsActor;
+import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
 
 /**
- * Test cases about {@link ActorRef} type.
- *
- * @author Riccardo Cardin
+ * LongTaskActor, simple class to simulate long task
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class ActorRefTest {
+public class LongTaskActor extends AbsActor<TrivialMessage> {
 
-    private ActorSystem system;
+    private int counter = 0;
+    private String task = "Not done";
 
-    /**
-     * Initializes the {@code system} with a concrete implementation before each test.
-     */
-    @Before
-    public void init() {
-        system = ActorSystemFactory.buildActorSystem();
+    public String getTask() {
+        return task;
     }
 
-    @Test
-    public void shouldImplementComparable() {
-        ActorRef ref1 = system.actorOf(TrivialActor.class);
-        ActorRef ref2 = system.actorOf(TrivialActor.class);
-        Assert.assertNotEquals("Two references must appear as different using the compareTo method",
-                0, ref1.compareTo(ref2));
-        Assert.assertEquals("A reference must be equal to itself according to compareTo method",
-                0, ref1.compareTo(ref1));
+    @Override
+    public void receive(TrivialMessage message) {
+        if (message != null) {
+            // long task
+            try {
+                Thread.sleep(4000);
+                counter++;
+                task = "Done " + counter + " times";
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
-
-    /**
-     * Stops the {@code system}
-     */
-    @After
-    public void tearDown() { system.stop(); }
 }
