@@ -41,6 +41,7 @@ import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.genetic.*;
 import it.unipd.math.pcd.actors.utils.messages.genetic.*;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,4 +87,10 @@ public class GeneticActorTest {
                 "11110111111111111101111011111111",
                 ((GeneticActor) popSampleRef.getUnderlyingActor(system)).printFittest());
     }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

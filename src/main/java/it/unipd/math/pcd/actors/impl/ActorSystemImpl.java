@@ -62,6 +62,16 @@ public class ActorSystemImpl extends AbsActorSystem {
     }
 
     /**
+     * Stops all the actors of the system, clear the container (map) and shutdown
+     * executor service instance {@code eService}
+     */
+    @Override
+    public void stop() {
+        super.stop();
+        eService.shutdown();
+    }
+
+    /**
      * Execute a runnable with {@code eService} instance of Executor
      * @param receivingLoop Runnable type to be executed
      */

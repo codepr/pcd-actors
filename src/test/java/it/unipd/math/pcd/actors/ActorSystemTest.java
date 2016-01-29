@@ -41,6 +41,7 @@ import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -123,4 +124,10 @@ public class ActorSystemTest {
         system.stop();
         system.stop(ref1);
     }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

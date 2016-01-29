@@ -40,6 +40,7 @@ package it.unipd.math.pcd.actors;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.bouncer.BouncerActor;
 import it.unipd.math.pcd.actors.utils.messages.bouncer.BounceMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,4 +84,10 @@ public class BouncerActorTest {
         Thread.sleep(2000);
         Assert.assertEquals("Should answer 'Fine.', even after being stopped", "Fine.", ((BouncerActor) declarator.getUnderlyingActor(system)).getLastStatement());
     }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

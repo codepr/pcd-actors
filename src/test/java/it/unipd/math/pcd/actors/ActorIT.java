@@ -46,6 +46,7 @@ import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
 import it.unipd.math.pcd.actors.utils.messages.counter.Decrement;
 import it.unipd.math.pcd.actors.utils.messages.counter.Increment;
 import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,4 +145,10 @@ public class ActorIT {
         Assert.assertEquals("Final counter value should be 1750",
                 1750, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

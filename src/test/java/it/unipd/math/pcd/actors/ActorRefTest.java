@@ -41,6 +41,7 @@ import it.unipd.math.pcd.actors.impl.ActorSystemImpl;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,4 +74,10 @@ public class ActorRefTest {
         Assert.assertEquals("A reference must be equal to itself according to compareTo method",
                 0, ref1.compareTo(ref1));
     }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }
