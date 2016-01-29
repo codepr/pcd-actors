@@ -37,8 +37,10 @@
  */
 package it.unipd.math.pcd.actors;
 
+import it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.bouncer.BouncerActor;
+import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
 import it.unipd.math.pcd.actors.utils.messages.bouncer.BounceMessage;
 import org.junit.After;
 import org.junit.Assert;
@@ -83,6 +85,12 @@ public class BouncerActorTest {
         system.stop(oracle);
         Thread.sleep(2000);
         Assert.assertEquals("Should answer 'Fine.', even after being stopped", "Fine.", ((BouncerActor) declarator.getUnderlyingActor(system)).getLastStatement());
+    }
+
+    @Test(expected = UnsupportedMessageException.class)
+    public void shouldGetUnsupportedMessageExceptionWithUnknownMessageType() {
+        BouncerActor b = (BouncerActor) (new TestActorRef(system.actorOf(BouncerActor.class))).getUnderlyingActor(system);
+        b.receive(new TrivialMessage());
     }
 
     /**

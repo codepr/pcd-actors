@@ -84,7 +84,7 @@ public abstract class AbsActorSystem implements ActorSystem {
     }
 
     @Override
-    public void stop(ActorRef<?> actor) throws NoSuchActorException {
+    public void stop(ActorRef<?> actor) {
         if(!actors.containsKey(actor)) {
             throw new NoSuchActorException();
         }
@@ -106,7 +106,7 @@ public abstract class AbsActorSystem implements ActorSystem {
      * @return The actor associated to ref
      * @throws NoSuchActorException if no actor was found
      */
-    public Actor<?> getActor(ActorRef<?> ref) throws NoSuchActorException {
+    public Actor<?> getActor(ActorRef<?> ref) {
         Actor ret = actors.get(ref);
         if(ret == null) throw new NoSuchActorException();
         return ret;

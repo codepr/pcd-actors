@@ -38,6 +38,7 @@
 package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
+import it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException;
 import it.unipd.math.pcd.actors.mailbox.MailBox;
 import it.unipd.math.pcd.actors.mailbox.MailBoxImpl;
 import it.unipd.math.pcd.actors.impl.AbsActorRef;
@@ -122,7 +123,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         while(!mailBox.isEmpty()) {
             try {
                 receive(getNextMessage());
-            } catch (NoSuchActorException e) {
+            } catch (NoSuchActorException | UnsupportedMessageException e) {
                 e.printStackTrace();
             }
         }
@@ -159,7 +160,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     private synchronized void start() {
         this.alive = true;
         this.looping = true;
-        ((AbsActorRef<T>) self).execute(new ReceiveLoop());
+        ((AbsActorRef<T>) self).startReceivingLoop(new ReceiveLoop());
     }
 
     /**
@@ -172,7 +173,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
             while (isAlive() && isLooping()) {
                 try {
                     receive(getNextMessage());
-                } catch (NoSuchActorException e) {
+                } catch (NoSuchActorException | UnsupportedMessageException e) {
                     e.printStackTrace();
                 }
             }

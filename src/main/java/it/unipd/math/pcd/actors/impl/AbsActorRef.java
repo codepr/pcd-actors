@@ -42,6 +42,7 @@ import it.unipd.math.pcd.actors.AbsActorSystem;
 import it.unipd.math.pcd.actors.ActorRef;
 import it.unipd.math.pcd.actors.AbsActor;
 import it.unipd.math.pcd.actors.Message;
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 
 /**
  * A reference of an actor that allow to locate it in the actor system.
@@ -69,9 +70,10 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
      * @param to The actor to which sending the message
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void send(T message, ActorRef to) {
-        ((AbsActor<T>) system.getActor(to)).enqueue(message);
+        try {
+            ((AbsActor<T>) system.getActor(to)).enqueue(message);
+        } catch(NoSuchActorException e) {}
         ((AbsActor<T>) system.getActor(to)).setSender(this);
     }
 
@@ -90,7 +92,7 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
      * Execute a runnable using {@code system}
      * @param receivingLoop Runnable type to be executed
      */
-    public void execute(Runnable receivingLoop) {
+    public void startReceivingLoop(Runnable receivingLoop) {
         system.startActorReceiveLoop(receivingLoop);
     }
 }
