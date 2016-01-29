@@ -73,7 +73,9 @@ public abstract class AbsActorRef<T extends Message> implements ActorRef<T> {
     public void send(T message, ActorRef to) {
         try {
             ((AbsActor<T>) system.getActor(to)).enqueue(message);
-        } catch(NoSuchActorException e) {}
+        } catch(NoSuchActorException e) {
+            throw e;
+        }
         ((AbsActor<T>) system.getActor(to)).setSender(this);
     }
 
