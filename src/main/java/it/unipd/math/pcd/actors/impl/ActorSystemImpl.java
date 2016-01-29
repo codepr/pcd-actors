@@ -56,7 +56,7 @@ public class ActorSystemImpl extends AbsActorSystem {
      */
 	@Override
     protected ActorRef createActorReference(ActorMode mode) {
-        if(mode == ActorMode.LOCAL)
+        if (mode == ActorMode.LOCAL)
             return new LocalActorRef(this);
         else throw new IllegalArgumentException();
     }

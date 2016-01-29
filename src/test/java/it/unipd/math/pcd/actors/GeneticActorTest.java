@@ -76,7 +76,7 @@ public class GeneticActorTest {
 
         GeneticActor popSampleActor = (GeneticActor) popSampleRef.getUnderlyingActor(system);
         popSampleActor.initPopulationAndSolution(15, solution);
-        while(((GeneticActor) popSampleRef.getUnderlyingActor(system)).getFitness() < 32) {
+        while (((GeneticActor) popSampleRef.getUnderlyingActor(system)).getFitness() < 32) {
             TestActorRef nature = new TestActorRef(system.actorOf(TrivialActor.class));
             nature.send(new Evolve(), popSampleRef);
         }

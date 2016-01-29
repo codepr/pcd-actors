@@ -85,7 +85,7 @@ public abstract class AbsActorSystem implements ActorSystem {
 
     @Override
     public void stop(ActorRef<?> actor) {
-        if(!actors.containsKey(actor)) {
+        if (!actors.containsKey(actor)) {
             throw new NoSuchActorException();
         }
         ((AbsActor) actors.get(actor)).stop();
@@ -94,7 +94,7 @@ public abstract class AbsActorSystem implements ActorSystem {
 
     @Override
     public void stop() {
-        for(Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet()) {
+        for (Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet()) {
             ((AbsActor) actor.getValue()).stop();
         }
         actors.clear();
@@ -108,7 +108,7 @@ public abstract class AbsActorSystem implements ActorSystem {
      */
     public Actor<?> getActor(ActorRef<?> ref) {
         Actor ret = actors.get(ref);
-        if(ret == null) throw new NoSuchActorException();
+        if (ret == null) throw new NoSuchActorException();
         return ret;
     }
 

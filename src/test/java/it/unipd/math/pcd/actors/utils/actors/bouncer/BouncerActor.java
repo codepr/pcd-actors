@@ -59,7 +59,7 @@ public class BouncerActor extends AbsActor<Message> {
 
     @Override
     public void receive(Message message) {
-        if(message instanceof BounceMessage) {
+        if (message instanceof BounceMessage) {
             lastStatement = ((BounceMessage) message).getStatement();
             switch (((BounceMessage) message).getStatement().toLowerCase()) {
                 case "hi":

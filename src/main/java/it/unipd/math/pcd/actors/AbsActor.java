@@ -111,7 +111,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         if (!alive)
             throw new NoSuchActorException();
         mailBox.enqueue(message);
-        if(!this.looping) start();
+        if (!this.looping) start();
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
      */
     public synchronized void stop() {
         this.looping = false;
-        while(!mailBox.isEmpty()) {
+        while (!mailBox.isEmpty()) {
             try {
                 receive(getNextMessage());
             } catch (NoSuchActorException | UnsupportedMessageException e) {
