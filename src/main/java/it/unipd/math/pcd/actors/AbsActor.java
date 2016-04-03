@@ -24,6 +24,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -32,6 +33,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -47,6 +49,7 @@ import it.unipd.math.pcd.actors.impl.AbsActorRef;
  * Defines common properties of all actors.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -170,6 +173,11 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     private class ReceiveLoop implements Runnable {
         @Override
         public void run() {
+            /**
+             * loop conditions:
+             * - actor must be alive
+             * - actor has already started looping
+             */
             while (isAlive() && isLooping()) {
                 try {
                     receive(getNextMessage());
