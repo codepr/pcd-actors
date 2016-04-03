@@ -24,6 +24,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -32,15 +33,23 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
 
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
+import it.unipd.math.pcd.actors.exceptions.UnsupportedMessageException;
+import it.unipd.math.pcd.actors.mailbox.MailBox;
+import it.unipd.math.pcd.actors.mailbox.MailBoxImpl;
+import it.unipd.math.pcd.actors.impl.AbsActorRef;
+
 /**
  * Defines common properties of all actors.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -57,7 +66,28 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected ActorRef<T> sender;
 
     /**
-     * Sets the self-referece.
+     * MailBox for incoming messages
+     */
+    protected MailBox<T> mailBox;
+
+    /**
+     * Actor internal status flag
+     */
+    private volatile boolean alive;
+
+    /**
+     * Looping to apply receive method on incoming messages status flag
+     */
+    private volatile boolean looping;
+
+    public AbsActor() {
+        this.mailBox = new MailBoxImpl<>();
+        this.alive = true;
+        this.looping = false;
+    }
+
+    /**
+     * Sets the self-reference.
      *
      * @param self The reference to itself
      * @return The actor.
@@ -65,5 +95,96 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected final Actor<T> setSelf(ActorRef<T> self) {
         this.self = self;
         return this;
+    }
+
+    /**
+     * Sets the reference to the sender of the current message
+     * @param sender The reference to the sender of the current message
+     */
+    public final void setSender(ActorRef<T> sender) {
+        this.sender = sender;
+    }
+
+    /**
+     * Enqueue incoming messages inside the mailbox
+     * @param message The message to be stored
+     * @throws NoSuchActorException if actor status is not alive
+     */
+    public synchronized void enqueue(T message) {
+        if (!alive)
+            throw new NoSuchActorException();
+        mailBox.enqueue(message);
+        if (!this.looping) start();
+    }
+
+    /**
+     * Stops the actor from receiving incoming messages, process remaining messages
+     * in the mailbox and sets {@code alive} to false
+     */
+    public synchronized void stop() {
+        this.looping = false;
+        while (!mailBox.isEmpty()) {
+            try {
+                receive(getNextMessage());
+            } catch (NoSuchActorException | UnsupportedMessageException e) {
+                e.printStackTrace();
+            }
+        }
+        this.alive = false;
+    }
+
+    /**
+     * Return the actor status
+     * @return True if alive, otherwise false
+     */
+    private boolean isAlive() {
+        return this.alive;
+    }
+
+    /**
+     * Return the receiving loop status
+     * @return True if the actor is looping, otherwise false
+     */
+    private boolean isLooping() { return this.looping; }
+    /**
+     * Remove the head message from the mailbox, ready to be processed
+     * @throws NoSuchActorException if the actor is not alive (stopped)
+     * @return the head message of the mailbox if there's any
+     */
+    private T getNextMessage() {
+        if (!alive)
+            throw new NoSuchActorException();
+        return this.mailBox.remove();
+    }
+
+    /**
+     * Starts the receiving loop for the actor, set it's status to alive and looping
+     */
+    private synchronized void start() {
+        this.alive = true;
+        this.looping = true;
+        ((AbsActorRef<T>) self).startReceivingLoop(new ReceiveLoop());
+    }
+
+    /**
+     * Runnable type, process all messages inside the mailbox for the full duration
+     * of the alive status of the actor
+     */
+    private class ReceiveLoop implements Runnable {
+        @Override
+        public void run() {
+            /**
+             * loop conditions:
+             * - actor must be alive
+             * - actor has already started looping
+             */
+            while (isAlive() && isLooping()) {
+                try {
+                    receive(getNextMessage());
+                } catch (NoSuchActorException | UnsupportedMessageException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -32,19 +33,21 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
-
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A map-based implementation of the actor system.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -54,6 +57,10 @@ public abstract class AbsActorSystem implements ActorSystem {
      * Associates every Actor created with an identifier.
      */
     private Map<ActorRef<?>, Actor<?>> actors;
+
+    public AbsActorSystem() {
+        actors = new ConcurrentHashMap<>();
+    }
 
     @Override
     public ActorRef<? extends Message> actorOf(Class<? extends Actor> actor, ActorMode mode) {
@@ -79,5 +86,46 @@ public abstract class AbsActorSystem implements ActorSystem {
         return this.actorOf(actor, ActorMode.LOCAL);
     }
 
+    @Override
+    public void stop(ActorRef<?> actor) {
+        if (!actors.containsKey(actor)) {
+            throw new NoSuchActorException();
+        }
+        ((AbsActor) actors.get(actor)).stop();
+        actors.remove(actor);
+    }
+
+    @Override
+    public void stop() {
+        for (Map.Entry<ActorRef<?>, Actor<?>> actor : actors.entrySet()) {
+            ((AbsActor) actor.getValue()).stop();
+        }
+        actors.clear();
+    }
+
+    /**
+     * Return the actor associated to a given ActorRef inside the HashMap
+     * @param ref reference to ActorRef
+     * @return The actor associated to ref
+     * @throws NoSuchActorException if no actor was found
+     */
+    public Actor<?> getActor(ActorRef<?> ref) {
+        Actor ret = actors.get(ref);
+        if (ret == null) throw new NoSuchActorException();
+        return ret;
+    }
+
+    /**
+     * Execute a runnable with {@code eService} instance of Executor
+     * @param receivingLoop Runnable type to be executed
+     */
+    public abstract void startActorReceiveLoop(Runnable receivingLoop);
+
+    /**
+     * Create an instance of {@link ActorRef}
+     * @param mode Possible mode to create an actor. Could be{@code LOCAL} or
+     * {@code REMOTE}.
+     * @return An instance to {@link ActorRef}
+     */
     protected abstract ActorRef createActorReference(ActorMode mode);
 }

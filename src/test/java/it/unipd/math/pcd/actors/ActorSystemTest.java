@@ -41,6 +41,7 @@ import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,4 +106,30 @@ public class ActorSystemTest {
         system.stop(ref1);
         system.stop(ref1);
     }
+
+    /************* ADDITIONAL TESTS *****************/
+
+    @Test(expected = NoSuchActorException.class)
+    public void shouldStopAllActorsAndTheseCouldNotBeAbleToReceiveNewMessages() {
+        ActorRef ref1 = system.actorOf(TrivialActor.class);
+        ActorRef ref2 = system.actorOf(TrivialActor.class);
+        system.stop();
+        ref1.send(new TrivialMessage(), ref2);
+        ref2.send(new TrivialMessage(), ref1);
+    }
+
+    @Test(expected = NoSuchActorException.class)
+    public void shouldStopAllActorsAndTheseCouldNotStoppedASecondTime() {
+        ActorRef ref1 = system.actorOf(TrivialActor.class);
+        ActorRef ref2 = system.actorOf(TrivialActor.class);
+        ref1.send(new TrivialMessage(), ref1);
+        system.stop();
+        system.stop(ref1);
+    }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

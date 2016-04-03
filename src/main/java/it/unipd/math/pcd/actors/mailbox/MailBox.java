@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,57 +31,38 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-package it.unipd.math.pcd.actors;
+package it.unipd.math.pcd.actors.mailbox;
 
-import it.unipd.math.pcd.actors.*;
-
+import it.unipd.math.pcd.actors.Message;
 /**
- * Decorates an {@link ActorRef} adding the ability to get the underlying actor associated to the reference.
+ * A mailbox system in the <code>pcd-actors</code> system to store incoming
+ * messages.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class TestActorRef<T extends Message> implements ActorRef<T> {
-
-    private ActorRef<T> reference;
-
-    public TestActorRef(ActorRef<T> actorRef) {
-        this.reference = actorRef;
-    }
+public interface MailBox<T extends Message> {
 
     /**
-     * Returns the {@link Actor} associated to the internal reference.
-     * @param system Actor system from which retrieving the actor
-     *
-     * @return An actor
+     * Enqueue incoming messages inside the structure of choice
+     * @param message The message to be stored
      */
-    public Actor<T> getUnderlyingActor(ActorSystem system) {
-        // implemented by andrea
-        return (Actor<T>)((AbsActorSystem) system).getActor(reference);
-    }
+    void enqueue(T message);
 
-    @Override
-    public void send(T message, ActorRef to) {
-        reference.send(message, to);
-    }
+    /**
+     * Remove the head message of the queue
+     * @return The last message stored inside the queue
+     */
+    T remove();
 
-    @Override
-    public int compareTo(ActorRef o) {
-        return reference.compareTo(o);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return reference.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return reference.hashCode();
-    }
+    /**
+     * Check if the queue is empty
+     * @return True if the queue is empty, false otherwise
+     */
+    boolean isEmpty();
 }

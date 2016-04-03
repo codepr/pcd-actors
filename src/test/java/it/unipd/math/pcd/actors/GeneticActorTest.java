@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,13 +31,15 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
 package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
+import it.unipd.math.pcd.actors.utils.actors.genetic.*;
+import it.unipd.math.pcd.actors.utils.messages.genetic.*;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,13 +47,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases about {@link ActorRef} type.
- *
- * @author Riccardo Cardin
- * @version 1.0
- * @since 1.0
+ * GeneticActor test class
+ * @author Andrea Giacomo Baldan
  */
-public class ActorRefTest {
+public class GeneticActorTest {
 
     private ActorSystem system;
 
@@ -60,17 +59,33 @@ public class ActorRefTest {
      */
     @Before
     public void init() {
-        system = ActorSystemFactory.buildActorSystem();
+        this.system = ActorSystemFactory.buildActorSystem();
     }
 
     @Test
-    public void shouldImplementComparable() {
-        ActorRef ref1 = system.actorOf(TrivialActor.class);
-        ActorRef ref2 = system.actorOf(TrivialActor.class);
-        Assert.assertNotEquals("Two references must appear as different using the compareTo method",
-                0, ref1.compareTo(ref2));
-        Assert.assertEquals("A reference must be equal to itself according to compareTo method",
-                0, ref1.compareTo(ref1));
+    public void shouldCalcFittestIndividual() throws InterruptedException {
+        TestActorRef popSampleRef = new TestActorRef(system.actorOf(GeneticActor.class));
+        byte[] solution = new byte[32];
+        // init the solution
+        for (int i = 0; i < solution.length; i++) {
+            solution[i] = 1;
+        }
+        solution[4] = 0;
+        solution[18] = 0;
+        solution[23] = 0;
+
+        GeneticActor popSampleActor = (GeneticActor) popSampleRef.getUnderlyingActor(system);
+        popSampleActor.initPopulationAndSolution(15, solution);
+        while (((GeneticActor) popSampleRef.getUnderlyingActor(system)).getFitness() < 32) {
+            TestActorRef nature = new TestActorRef(system.actorOf(TrivialActor.class));
+            nature.send(new Evolve(), popSampleRef);
+        }
+
+        Thread.sleep(2000);
+
+        Assert.assertEquals("The solution should be 11110111111111111101111011111111",
+                "11110111111111111101111011111111",
+                ((GeneticActor) popSampleRef.getUnderlyingActor(system)).printFittest());
     }
 
     /**

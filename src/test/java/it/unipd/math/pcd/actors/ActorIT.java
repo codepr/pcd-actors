@@ -40,14 +40,19 @@ package it.unipd.math.pcd.actors;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.actors.counter.CounterActor;
+import it.unipd.math.pcd.actors.utils.actors.longtask.LongTaskActor;
 import it.unipd.math.pcd.actors.utils.actors.ping.pong.PingPongActor;
 import it.unipd.math.pcd.actors.utils.actors.StoreActor;
 import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
+import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
+import it.unipd.math.pcd.actors.utils.messages.counter.Decrement;
 import it.unipd.math.pcd.actors.utils.messages.counter.Increment;
 import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * Integration test suite on actor features.
@@ -111,4 +116,69 @@ public class ActorIT {
         Assert.assertEquals("A counter that was incremented 1000 times should be equal to 1000",
                 200, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
+
+    /************* ADDITIONAL TESTS *****************/
+
+    @Test
+    public void shouldSynchronizedIncrementOrDecrement() throws InterruptedException {
+        final TestActorRef counter = new TestActorRef(system.actorOf(CounterActor.class));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 5500; i++) {
+                    TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
+                    adder.send(new Increment(), counter);
+                }
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 1500; i++) {
+                    TestActorRef subtractor = new TestActorRef(system.actorOf(TrivialActor.class));
+                    subtractor.send(new Decrement(), counter);
+                }
+            }
+        }).start();
+        for (int i = 0; i < 2250; i++) {
+            TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
+            adder.send(new Decrement(), counter);
+        }
+
+        Thread.sleep(2000);
+        Assert.assertEquals("Final counter value should be 1750",
+                1750, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
+    }
+
+    @Test
+    public void shouldProcessRemainingMessagesAfterStop() {
+        TestActorRef ref1 = new TestActorRef(system.actorOf(LongTaskActor.class));
+        TestActorRef ref2 = new TestActorRef(system.actorOf(TrivialActor.class));
+        LongTaskActor lta = (LongTaskActor) ref1.getUnderlyingActor(system);
+
+        for (int i = 0; i < 3; i++) {
+            ref2.send(new TrivialMessage(), ref1);
+        }
+        system.stop(ref1);
+        Assert.assertEquals("should read Done 3 times", "Done 3 times", lta.getTask());
+    }
+
+    @Test
+    public void shouldProcessRemainingMessagesAfterSystemStopped() {
+        TestActorRef ref1 = new TestActorRef(system.actorOf(LongTaskActor.class));
+        TestActorRef ref2 = new TestActorRef(system.actorOf(TrivialActor.class));
+        LongTaskActor lta = (LongTaskActor) ref1.getUnderlyingActor(system);
+
+        for (int i = 0; i < 3; i++) {
+            ref2.send(new TrivialMessage(), ref1);
+        }
+        system.stop();
+        Assert.assertEquals("should read Done 3 times", "Done 3 times", lta.getTask());
+    }
+
+    /**
+     * Stops the {@code system}
+     */
+    @After
+    public void tearDown() { system.stop(); }
 }

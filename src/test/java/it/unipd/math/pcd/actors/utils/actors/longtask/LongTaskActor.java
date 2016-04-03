@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,57 +31,41 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-package it.unipd.math.pcd.actors;
+package it.unipd.math.pcd.actors.utils.actors.longtask;
 
-import it.unipd.math.pcd.actors.*;
+import it.unipd.math.pcd.actors.AbsActor;
+import it.unipd.math.pcd.actors.utils.messages.TrivialMessage;
 
 /**
- * Decorates an {@link ActorRef} adding the ability to get the underlying actor associated to the reference.
- *
- * @author Riccardo Cardin
+ * LongTaskActor, simple class to simulate long task
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public class TestActorRef<T extends Message> implements ActorRef<T> {
+public class LongTaskActor extends AbsActor<TrivialMessage> {
 
-    private ActorRef<T> reference;
+    private int counter = 0;
+    private String task = "Not done";
 
-    public TestActorRef(ActorRef<T> actorRef) {
-        this.reference = actorRef;
-    }
-
-    /**
-     * Returns the {@link Actor} associated to the internal reference.
-     * @param system Actor system from which retrieving the actor
-     *
-     * @return An actor
-     */
-    public Actor<T> getUnderlyingActor(ActorSystem system) {
-        // implemented by andrea
-        return (Actor<T>)((AbsActorSystem) system).getActor(reference);
+    public String getTask() {
+        return task;
     }
 
     @Override
-    public void send(T message, ActorRef to) {
-        reference.send(message, to);
-    }
-
-    @Override
-    public int compareTo(ActorRef o) {
-        return reference.compareTo(o);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return reference.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return reference.hashCode();
+    public void receive(TrivialMessage message) {
+        if (message != null) {
+            // long task
+            try {
+                Thread.sleep(4000);
+                counter++;
+                task = "Done " + counter + " times";
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p/>
- * Copyright (c) 2015 Riccardo Cardin
+ * Copyright (c) 2015 Andrea Giacomo Baldan
  * <p/>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * <p/>
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -31,61 +31,66 @@
 /**
  * Please, insert description here.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-package it.unipd.math.pcd.actors;
+package it.unipd.math.pcd.actors.mailbox;
+
+import it.unipd.math.pcd.actors.Message;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * The system of actors. Using the system it is possible to:
- * <ul>
- *     <li>Create a new instance of an actor</li>
- *     <li>Stopping an actor</li>
- * </ul>
+ * A mailbox system in the <code>pcd-actors</code> system to store incoming
+ * messages.
  *
- * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
-public interface ActorSystem {
+public class MailBoxImpl<T extends Message> implements MailBox<T> {
 
     /**
-     * Create an instance of {@code actor} returning a {@link ActorRef reference} to it using the given {@code mode}.
-     *
-     * @param actor The type of actor that has to be created
-     * @param mode The mode of the actor requested
-     *
-     * @return A reference to the actor
+     * Blocking queue for messages
      */
-    ActorRef<? extends Message> actorOf(Class<? extends Actor> actor, ActorMode mode);
+    private BlockingQueue<T> box;
+
+    public MailBoxImpl() {
+        box = new LinkedBlockingQueue<>();
+    }
 
     /**
-     * Create an instance of {@code actor} that executes locally.
-     *
-     * @param actor The type of actor that has to be created
-     * @return A reference to the actor
+     * Enqueue incoming messages inside the structure of choice
+     * @param message The message to be stored
      */
-    ActorRef<? extends Message> actorOf(Class<? extends Actor> actor);
+    public void enqueue(T message) {
+        try {
+            box.put(message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
-     * Stops {@code actor}.
-     *
-     * @param actor The actor to be stopped
+     * Remove the head message of the queue
+     * @return The last message stored inside the queue
      */
-    void stop(ActorRef<?> actor);
+    public T remove() {
+        T message = null;
+        try {
+            message = box.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
 
     /**
-     * Stops all actors of the system.
+     * Check if the queue is empty
+     * @return True if the queue is empty, false otherwise
      */
-    void stop();
-
-    /**
-     * Possible modes to create an actor. {@code LOCALE} mode is used to create an actor
-     * that acts in the local system. {@code REMOTE} mode is used to create remote actors.
-     */
-    enum ActorMode {
-        LOCAL,
-        REMOTE
+    public boolean isEmpty() {
+        return box.isEmpty();
     }
 }
