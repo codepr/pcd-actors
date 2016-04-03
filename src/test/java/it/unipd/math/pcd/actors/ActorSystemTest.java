@@ -24,6 +24,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -32,6 +33,7 @@
  * Please, insert description here.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
@@ -50,6 +52,7 @@ import org.junit.Test;
  * Tests features of an actors' system.
  *
  * @author Riccardo Cardin
+ * @author Andrea Giacomo Baldan
  * @version 1.0
  * @since 1.0
  */
